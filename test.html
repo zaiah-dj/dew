@@ -1,0 +1,234 @@
+<!--
+test.html
+
+ ___        ____     __
+|    \ __\_  \   | |
+|     \   \|\| |
+|  |   /   \   |   |
+|     /_______/ \      |
+|____/          \_|\__|
+
+dew.js is an amalgamation of ideas I've got for writing front-end web apps.
+
+We don't include webpack, boiler plate or anything else.
+
+- State is maintained via anonymous functions.
+
+- Components are written via raw markup. (Not HTML probably)
+
+
+  -->
+<html>
+<head>
+
+<!-- Styles can go here for testing purposes -->
+<style>
+.glossary {
+	display: block;
+	width: 80%;
+}
+.glossary th {
+	text-align: left;
+}
+.glossary td:nth-child(1) {
+	width: 200px;
+}
+.glossary tr:nth-child(odd) {
+	background-color: pink;
+}
+.glossary tr:nth-child(even) {
+	background-color: red;
+}
+</style>
+
+<!-- Include dew. -->
+<script src="dew.js"></script>
+<script>
+/*State*/
+document.addEventListener( "DOMContentLoaded", function (ev) {
+
+	//This idea works fairly well...
+	var a = function() {
+		var state = { status:0 };
+		return function () {
+			//state
+			var div = document.createElement( "div" );
+			var p = document.createElement( "p" );
+			var h2 = document.createElement( "h2" );
+			var button = document.createElement( "button" );
+
+			p.innerHTML = "John Salley is a good basketball player.";
+			h2.innerHTML = "Title of This";
+			button.innerHTML = "Click Me!";
+
+			div.appendChild( h2 );
+			div.appendChild( p );
+			div.appendChild( button );
+
+			var d = document.querySelector( ".stateTest" );
+			d.appendChild( div );
+
+			button.addEventListener( "click", function (ev) {
+				state.status = !state.status;
+				div.style.backgroundColor = state.status ? "red" : "blue"; 
+			});
+		}
+	}
+
+	//Haha, this is so damned ugly...
+	var b;
+	(b = a())();
+
+	//Initialize some function and it's crap.
+	//dew.init();
+	dew.debuggable( 1 );
+});
+</script>
+
+
+<script>
+/*Declarative Nodes*/
+document.addEventListener( "DOMContentLoaded", function (ev) {
+
+	//Declare a node.
+	var el = {
+		div: "simple text"
+	}
+
+	//Declare another node.
+	var el1 = {
+		div: { 
+			innerHTML: "simple text"
+		, listeners: {
+				click: function () { console.log( "Element was clicked." ); }
+			}
+		}
+	}
+
+	//Declare yet another node.
+	var el2 = {
+		div: {
+			children: [
+				{ p: "Your mom" }
+			, { h2: "Title" }
+			, { button: "Your Mom" }
+			]
+		}
+	}
+
+	//Declare one more node.
+	var el3 = {
+		div: {
+			p: "Your mom"
+		, h2: "Title"
+		, button: "Your Mom"
+		}
+	}
+
+	//Declare one last node.
+	var el4 = "div#mastermind";
+	var el5 = "div.myClassName#mastermind";
+	var el6 = "p.wisher";
+	var el7 = "div.bob = Some random text can go here.";
+
+	//Returns a node.
+	var d = [ dew.create( el ), dew.create( el1 ), dew.create( el2 ), dew.create( el3 ) ];
+	//var d = [ dew.create( el4 ), dew.create( el5 ), dew.create( el6 ), dew.create( el7 ) ];
+	for ( var n=0; n<d.length; n++ ) {
+		document.getElementsByClassName( "generationTest" )[0].appendChild( d[n] );		
+	}	
+
+});
+</script>
+
+
+<script>
+/*XHR*/
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	//Make requests and send them somewhere.
+	//var d = dew.get( "http://ramarcollins.com", where );
+});
+</script>
+
+
+<script>
+/*XHR*/
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	//Make requests by sending data to server.
+	//var d = dew.post( "http://ramarcollins.com" );
+});
+</script>
+
+
+<script>
+/*Routing*/
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	//...
+	var p = [];
+	//Make requests and send them somewhere.
+	//var d = dew.get( "http://ramarcollins.com" );
+});
+</script>
+
+
+</head>
+
+
+<body>
+
+	<h2>State</h2>
+	<div class="stateTest">
+	</div>
+
+	<h2>Element Generation</h2>
+	<div class="generationTest">
+	</div>
+
+	<h2>XMLHttpRequest (GETs)</h2>
+	<div class="xhrTest">
+	</div>
+
+	<h2>XMLHttpRequest (POSTs)</h2>
+	<div class="sendTest">
+	</div>
+
+	<h2>Routing & Organization</h2>
+	<div class="routeTest">
+	</div>
+
+	<h2>DOM Manipulation</h2>
+	<div class="dommannipulationTest">
+	</div>
+
+	<h2>Glossary</h2>
+	<div class="glossary">
+		<table>
+			<thead>
+				<th>Method</th>
+				<th>Usage</th>
+				<th>Result</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>dew.rand( <i>integer</i> n )</td>
+					<td>
+						var a = dew.rand( 23 );
+					</td>
+					<td id="dew_rand">
+						<script>document.getElementById("dew_rand").innerHTML = dew.rand( 23 )</script>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h2>Contact</h2>
+	<div class="glossary">
+		<ul>
+			<li>ramar@tubularmodular.com</li>
+		</ul>
+	</div>
+
+</body>
+
+</html>
