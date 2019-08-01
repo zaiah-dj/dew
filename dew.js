@@ -38,6 +38,11 @@ dew = (function () {
 		} 
 	}
 
+	//Traverse back and forth, with more terse, concise code. 
+  function traverse(e) {
+
+	}
+
 	return {
 
 		//Generate a set of elements.
@@ -45,9 +50,89 @@ dew = (function () {
 			me.debuggable = !me.debuggable; 
 		}	
 
-		//Traverse back and forth, with more terse, concise code. 
-	, traverse: function (e) {
+	, router: function (args) {
+			var local = {};
 
+			if ( !args ) {
+				return;
+			}
+
+			//Only for development
+			local.dev = 1;
+
+			//Verbose
+			local.verbose = args.verbose || 0;
+
+			//Split the URL	
+			local.locationArray = location.href.split( "/" ) ;
+
+			//Get the user's current location within the application.
+			local.currentLocation = ( local.locationArray[ local.locationArray.length - 1 ] == "" ) 
+				? "/" : local.locationArray[ local.locationArray.length - 1 ];
+
+			//Check for routes in args
+			local.routes = args.routes || {};
+
+			//local development stuff
+			if ( local.dev ) {
+			}	
+			
+			return {
+				init: function ( ) {
+					//Loop through the elements in the route specified.
+					//	( VERBOSE ) ? console.log( "Loading handlers for route '" + loc + "'" ) : 0;
+					for ( r in local.routes ) {
+						if ( local.currentLocation.indexOf( r ) > -1 ) {
+							for ( t in local.routes[ r ] ) {
+								tt = local.routes[ r ][ t ];
+								try {
+									//Find the DOM elements This call will only fail if the syntax of the selector was wrong.
+									//TODO: Would it be helpful to let the dev know that this has occurred and on which index?
+									dom = [].slice.call( document.querySelectorAll( tt.domSelector ) );
+									( local.verbose ) ? console.log( "Binding to '" + tt.domSelector + "'.  Element references below:" ) : 0;
+									( local.verbose ) ? console.log( dom ) : 0;
+								}
+								catch ( e ) {
+									//TODO: Handle SYNTAX_ERR using e.name 
+									console.log( e.message );
+								}
+							
+								//Apply attributes first
+								//TODO: This is a bad idea because removal needs to also work. 
+								//There's another key and subsequently an overcomplicated data structure.
+								if ( tt.attr ) {
+									//handle strings and common things like 'required' or 'checked'
+									for ( d in dom ) {
+										for ( key in tt.attr ) {
+											( local.verbose ) ? console.log( "Setting key '" + key + "' to '" + tt.attr[ key ] + "'" + " on element " + tt.domSelector + "(" + d + ")"  ) : 0;
+											dom[d].setAttribute( key, tt.attr[ key ] );
+										} 	
+									} 	
+								}
+
+								//Bind function(s) to event
+								if ( typeof tt.f === 'function' && typeof tt.event === 'string' ) {
+									( local.verbose ) ? console.log( "Binding single function " + tt.f.name + " \n\n" ) : 0;
+									for ( d in dom ) { 
+										( local.verbose ) ? dom[ d ].addEventListener( tt.event, (function(fname) { f = fname; return function(ev){console.log("Calling " + f); }})(tt.f.name) ) : 0;
+										dom[ d ].addEventListener( tt.event, tt.f ); 
+									}
+								}
+								else if ( typeof tt.f === 'object' && typeof tt.event === 'string' ) {
+									( local.verbose ) ? console.log( "Binding multiple functions" ) : 0;
+									for ( d in dom ) {
+										for ( ff in tt.f ) {
+											( local.verbose ) ? dom[d].addEventListener( tt.event, whatFunct.bind( null, tt.f[ff].name ) ) : 0;
+											dom[d].addEventListener( tt.event, tt.f[ ff ] ); 
+										}
+									}
+									( local.verbose ) ? console.log( "\n\n" ) : 0;
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
 		//Generate a set of elements.
@@ -175,14 +260,25 @@ dew = (function () {
 
 
 		//Get something from HTTP request
-	, get: function ( st ) {
-
+	, get: function ( addr, st ) {
+			var x = new XMLHttpRequest();
+			x.onreadystatechange = ( st.callback ) ? st.callback : function () {;} 
+			x.open( "GET", addr/*st.sendTo*/, false );
+			/*
+			if ( ! ("multipart" in st) )
+				x.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+			else {
+				x.setRequestHeader( 'Content-Type', "multipart/form-data; boundary=" + boundary );
+				Vals += "\r\n--" + boundary + "--"; 
+			}
+			*/
+			x.send();
 		}
 
 		//Send values back to a server, based on a selector
-	, post: function ( st ) {
+	, post: function ( addr, st ) {
 			var tv={}, av=[], mv=[]; 
-			var boundary = "------------------" + randStr( 31 );
+			var boundary = "------------------" + this.rand( 31 );
 			//Define this here, but figure out something else.
 			var packMsg = function ( k, v, mt, f ) {
 				if ( !("multipart" in st) )
@@ -258,21 +354,11 @@ dew = (function () {
 
 			//Make XHR to server and you're done
 			var x = new XMLHttpRequest();
-			x.onreadystatechange = ( st.callback ) ? st.callback : function ( evt ) { 
-				if ( this.readyState == 1 )
-					console.log( evt, 'at ready state 1' );	
-				if ( this.readyState == 2 )
-					console.log( evt, 'at ready state 2' );	
-				if ( this.readyState == 3 )
-					console.log( evt, 'at ready state 3' );	
-				if ( this.readyState == 4 ) {
-					console.log( evt, x.responseText );
-				}
-			}
+			x.onreadystatechange = ( st.callback ) ? st.callback : function () { ; }; 
 
 			//...
 			st.method = (!st.method) ? "POST" : st.method;
-			x.open( st.method, st.sendTo, false );
+			x.open( st.method, addr/*st.sendTo*/, false );
 
 			if ( ! ("multipart" in st) )
 				x.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );

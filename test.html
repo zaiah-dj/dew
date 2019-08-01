@@ -1,28 +1,181 @@
 <!--
-test.html
+/********************************************************************
+             ___
+            ___
+       ___ ddd _____   
+      ___ ddd _____   ___   ___
+    /ddddddd eeeeee  ___   ___
+   /ddd ddd ee  eee www    www/ 
+  /ddd ddd eeeeeee www    www/
+  \dddddd eee     www ww www/
+   _____ eeeeeee www ww www/
+         ______   www www/
+                _______ 
+                _______ .js
 
- ___        ____     __
-|    \ __\_  \   | |
-|     \   \|\| |
-|  |   /   \   |   |
-|     /_______/ \      |
-|____/          \_|\__|
+
+test.html
+=========
 
 dew.js is an amalgamation of ideas I've got for writing front-end web apps.
-
-We don't include webpack, boiler plate or anything else.
+It doesn't include or rely webpack, extensive boiler plate or anything else 
+that seems to be popular today.
 
 - State is maintained via anonymous functions.
 
 - Components are written via raw markup. (Not HTML probably)
 
+TODO:
+- JS can be used to activate TOC
+- Scroll should be designed too (even though its an effect)
+- Navigation should probably be integrated
+- Add a useful header (and some links to other stuff)
 
+ ********************************************************************/
   -->
 <html>
 <head>
 
 <!-- Styles can go here for testing purposes -->
 <style>
+html {
+	background-color: rgb(240,248,255);
+}
+
+footer {
+	padding-top: 50px;
+}
+
+header {
+	display: block;
+	width: 96%;
+	padding-left: 2%;
+	padding-right: 2%;
+	height: 50px;
+	position: fixed;
+	top: 0px;
+	z-index: 99;
+}
+
+header div {
+	float: left;
+	width: 100px;
+	left: -10px;
+	top: 15px;
+	font-weight: bold;
+	font-style: italic;
+	position: relative;
+}
+
+header ul {
+	position: relative;
+	float: right;
+}
+
+header ul li {
+	padding: 0px;
+	top: 0px;
+	display: inline-block;
+	margin-left: 10px;
+}
+
+header ul li a ,
+header ul li a:visited {
+	text-decoration: none;
+	color: black;
+}
+
+header ul li a:hover {
+	text-decoration: underline;
+}
+
+
+.container {
+	background-color: white;
+	padding: 100px;
+	padding-right: 20px;
+	padding-left: 20px;
+	margin: 0 auto;
+	width: 70%;
+	min-width: 300px;
+	top: 50px;
+	position: relative;
+}
+
+.toc a {
+	text-transform: capitalize;
+}
+
+p {
+	font-size: 1.3em;
+	font-family: "Times New Roman", serif;
+}
+
+pre {
+	background-color: #ffffe0;
+	color: black;
+	font-size: 12px;
+	line-height: 12px; 
+}
+
+
+.start {
+	text-align: center;
+	width: 100%;
+	height: 30%;
+	position: relative;
+}
+
+.start h1 {
+	position: relative;
+	margin: 0 auto;
+	top: 65%;
+	font-size: 170px;
+	text-align: center;
+	letter-spacing: -0.12em;
+}
+
+@media screen and (max-width: 700px) {
+	.start h1 {
+		font-size: 130px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.start h1 {
+		font-size: 110px;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	.start h1 {
+		font-size: 80px;
+	}
+}
+
+
+h2 {
+	font-size: 2.0em;
+	margin-top: 100px;
+	border-top: 1px solid black;
+}
+
+h3 {
+	font-size: 1.8em;
+}
+
+h4 {
+	font-size: 1.6em;
+}
+
+h5 {
+	font-size: 1.4em;
+}
+
+h6 {
+	font-size: 1.2em;
+}
+
 .glossary {
 	display: block;
 	width: 80%;
@@ -39,7 +192,12 @@ We don't include webpack, boiler plate or anything else.
 .glossary tr:nth-child(even) {
 	background-color: red;
 }
+
+script {
+	display: block;
+}
 </style>
+
 
 <!-- Include dew. -->
 <script src="dew.js"></script>
@@ -132,6 +290,7 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 	var el7 = "div.bob = Some random text can go here.";
 
 	//Returns a node.
+	var ee = [ el, el1, el2, el3 ];
 	var d = [ dew.create( el ), dew.create( el1 ), dew.create( el2 ), dew.create( el3 ) ];
 	//var d = [ dew.create( el4 ), dew.create( el5 ), dew.create( el6 ), dew.create( el7 ) ];
 	for ( var n=0; n<d.length; n++ ) {
@@ -155,7 +314,7 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 /*XHR*/
 document.addEventListener( "DOMContentLoaded", function (ev) {
 	//Make requests by sending data to server.
-	//var d = dew.post( "http://ramarcollins.com" );
+	//var d = dew.post( "http://ramarcollins.com", [] );
 });
 </script>
 
@@ -163,44 +322,134 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 <script>
 /*Routing*/
 document.addEventListener( "DOMContentLoaded", function (ev) {
-	//...
+	//Routing here
 	var p = [];
-	//Make requests and send them somewhere.
-	//var d = dew.get( "http://ramarcollins.com" );
 });
 </script>
 
+
+<script>
+//The app that tests all of the code on this page.
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	//Find all of the script tags and put them in pre tags?
+	var p = [].slice.call( document.getElementsByTagName( "script" ) );
+	p = p.slice( 1, p.length - 1 );
+
+	//For this first run, each pre tag is associated one of the scripts.
+	var pre = [].slice.call(document.getElementsByTagName( "pre" ));
+	for ( var i=0; i<p.length; i++ ) {
+		pre[ i ].innerText = p[ i ].innerText;
+	}	
+});
+</script>
 
 </head>
 
 
 <body>
 
-	<h2>State</h2>
+<header>
+<div>dew.js</div>
+<ul>
+	<li><a href="/">Links</a></li>
+	<li><a href="/">Recipes</a></li>
+	<li><a href="/">Docs</a></li>
+	<li><a href="/">Help</a></li>
+	<li><a href="/">Contact</a></li>
+</ul>
+</header>
+
+<div class="container">
+	<div class="start">
+		<h1>dew.js</h1>
+	</div>
+
+	<h2>Quick Links</h2>
+	<div class="toc">
+	<ul>
+		<li><a href="#summary">summary</a></li>
+		<li><a href="#state">state</a></li>
+		<li><a href="#element">element generation</a></li>
+		<li><a href="#xhrget">XMLHttpRequests (GET)</a></li>
+		<li><a href="#xhrpost">XMLHttpRequests (POST)</a></li>
+		<li><a href="#routing">routing</a></li>
+		<li><a href="#dom">DOM</a></li>
+		<li><a href="#glossary">glossary</a></li>
+	</ul>
+	</div>
+
+	<h2>Summary</h2>
+	<p>
+	<a>dew</a>.js is a lightweight Javascript framework.
+  It does not require webpack, use Babel, require Typescript 
+  or NPM or Yarn or any package manager.
+	It's features are listed below. 
+	</p>
+
+	<h2>Features</h2>
+	<h3>State</h3>
+	<p>
+	State is managed via closures.
+	</p>
+	<h4>Code</h4>
+	<pre></pre>
+	<h4>Output</h4>
 	<div class="stateTest">
 	</div>
 
-	<h2>Element Generation</h2>
+	<h3>Element Generation</h3>
+	<p>
+	Elements are just declared in simple JSON structures.
+	</p>
+	<h4>Code</h4>
+	<pre></pre>
+	<h4>Output</h4>
 	<div class="generationTest">
 	</div>
 
-	<h2>XMLHttpRequest (GETs)</h2>
+	<h3>XMLHttpRequest (GETs)</h3>
+	<p>
+	XMLHttpRequests using the GET method are silly simple to get going.
+	</p>
+	<h4>Code</h4>
+	<pre></pre>
+	<h4>Output</h4>
 	<div class="xhrTest">
 	</div>
 
-	<h2>XMLHttpRequest (POSTs)</h2>
+	<h3>XMLHttpRequest (POSTs)</h3>
+	<p>
+	XMLHttpRequests using the POST method are equally simple, but more so.
+	</p>
+	<h4>Code</h4>
+	<pre></pre>
+	<h4>Output</h4>
 	<div class="sendTest">
 	</div>
 
-	<h2>Routing & Organization</h2>
+	<h3>Routing & Organization</h3>
+	<p>
+	Creating a single page app can be done by defining a data structure.
+	</p>
+	<h4>Code</h4>
+	<pre></pre>
+	<h4>Output</h4>
 	<div class="routeTest">
 	</div>
 
-	<h2>DOM Manipulation</h2>
+	<h3>DOM Manipulation</h3>
+	<p>
+	Manipulation can be done via traversal.
+	</p>
+	<h4>Code</h4>
+	<pre></pre>
+	<h4>Output</h4>
 	<div class="dommannipulationTest">
 	</div>
 
 	<h2>Glossary</h2>
+	<p>
+	</p>
 	<div class="glossary">
 		<table>
 			<thead>
@@ -222,13 +471,19 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 		</table>
 	</div>
 
-	<h2>Contact</h2>
+	<h2>Contact & Issues</h2>
 	<div class="glossary">
 		<ul>
 			<li>ramar@tubularmodular.com</li>
 		</ul>
 	</div>
 
+	<footer>
+	Copyright 2019 Tubular Modular Inc.<br />
+	This site designed by <a href="http://tubularmodular.com">Tubular Modular Inc.</a>
+	</footer>
+
+</div>
 </body>
 
 </html>
