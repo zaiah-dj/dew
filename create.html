@@ -1,0 +1,84 @@
+<html>
+
+<head>
+<script src="dew.js"></script>
+</head>
+
+<body>
+<script>
+/*Declarative Nodes*/
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	//Anytime we use 'dew.*', we are globally modifying dew.
+	dew.debuggable();
+	document.getElementById("app").appendChild( dew.create({ 
+		button: {
+			innerHTML: "simple text"
+		, listeners: {
+				click: function ( ev ) { 
+					console.log( "Let's see the root: $1", scope );
+				}
+			}
+		}
+	}));
+
+	//what are you trying to do?
+	//write a function that can access the root node of something I create.
+	//1: with each new element, add a property called path?
+	//2: use a closure, and see if scope can be accessed (w/o lots of closures, this won't happen)
+	//3: a not so great way, but viable way to do it is making dew.scope global, and using ids and properties to get stuff
+	//i.e. object.property = id, dew.self or dew.root always returns the top level element and its path
+
+return;
+	//Declare a node.
+	var el = [
+		//Declare one last node.
+		 "div#mastermind"
+		,"div.myClassName#mastermind"
+		,"p.wisher"
+		,"div.bob = Some random text can go here."
+		,{ div: "simple text" }
+		//Declare another node.
+		,{ button: {
+				innerHTML: "simple text"
+			, listeners: {
+					click: function () { 
+						console.log( "Let's see the root: $1", scope.id );
+					}
+				}
+			}
+		}
+		//Declare yet another node.
+		,{ div: {
+				children: [
+					{ p: "Your mom" }
+				, { h2: "Title" }
+				, { button: "Your Mom" }
+				]
+			}
+		}
+		//Declare one more node.
+		,{ div: {
+				p: "Your mom"
+			, h2: "Title"
+			, button: "Your Mom"
+			}
+		}
+	];
+
+	//Returns a node.
+	//for ( var p, n=0; n < el.length; n++ ) {
+	//var i = document.createElement("div"); i.id = "#app";
+	//document.body.appendChild( i );
+	for ( var p, n=0; n < 6; n++ ) {
+		p = dew.create( el[n] );
+		console.log( p );
+		document.getElementById( "app" ).appendChild( p );
+		//document.querySelector( "div" ).appendChild( p );
+		//document.getElementsByClassName( "generationTest" )[0].appendChild( el[n] );		
+	}	
+
+});
+</script>
+<div id="app"></div>
+</body>
+</html>

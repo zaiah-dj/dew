@@ -114,10 +114,30 @@ p {
 pre {
 	background-color: #ffffe0;
 	color: black;
-	font-size: 12px;
-	line-height: 12px; 
+	font-size: 1.1em;
 }
 
+/*
+//Maybe really small widths shouldn't show up at all
+//Dew and some listeners can be used to selectively display pre code. 
+@media screen and (max-width: 700px) {
+	pre {
+		font-size: 1.1em;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	pre {
+		font-size: 0.7em;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	pre {
+		font-size: 0.7em;
+	}
+}
+*/
 
 .start {
 	text-align: center;
@@ -300,10 +320,58 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 });
 </script>
 
+<script>
+//Traversal
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	//Use the element in the div.
+	var d1 = document.querySelector( ".traversal .example1" );
+	
+	//Show something and modify something...
+	//dew.traverse( d1, "@" );
+
+	//Generate a new element and run on that too
+	var d2 = {
+		div: {
+			p: "There is some much to say."
+		, span: {
+				className: "peter"
+			, innerHTML: "Peter robbed Paul."
+			} 
+		}
+	}
+
+	//Show something and modify something...
+
+	//Finally, try something that relies on a timeout
+});
+</script>
 
 <script>
-/*XHR*/
+//XMLHttpRequest - GET
 document.addEventListener( "DOMContentLoaded", function (ev) {
+	//Find the element.
+	var d = document.querySelector( ".xhrGetTest" );
+	var a = function () { 0; }	
+
+	//Add a button
+	d.appendChild( dew.create( {
+		div: {
+			button: {
+				innerHTML: "Click Me."
+			, listeners: {
+					click: function () {
+						//dew.get does need a callback
+						var t= dew.get( "http://ramarcollins.com", a ).responseText;
+						//../div - Go back from where we currently are to div
+						//@/div - Start at root (@) and div
+						//@/div = t; 
+					}
+				}
+			}
+		, div: "" //Simple blank div
+		}
+	}));
+
 	//Make requests and send them somewhere.
 	//var d = dew.get( "http://ramarcollins.com", where );
 });
@@ -311,16 +379,17 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 
 
 <script>
-/*XHR*/
+//XMLHttpRequest - POST 
 document.addEventListener( "DOMContentLoaded", function (ev) {
 	//Make requests by sending data to server.
+	var d = document.querySelector( "xhrGetTest" );
 	//var d = dew.post( "http://ramarcollins.com", [] );
 });
 </script>
 
 
 <script>
-/*Routing*/
+//Routing
 document.addEventListener( "DOMContentLoaded", function (ev) {
 	//Routing here
 	var p = [];
@@ -340,6 +409,24 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 	for ( var i=0; i<p.length; i++ ) {
 		pre[ i ].innerText = p[ i ].innerText;
 	}	
+
+	//All the pre code will be triggered by buttons that sit above the example.
+	//...
+	console.log( "STARTING LAST RUN OF CODE..." );
+	var d1 = document.querySelector( ".traversal .example1" );
+	dew.traverse( d1, "@" );
+	//after a dew.create, this should be set...
+	var d2 = document.querySelector( ".abovefooter" );
+	d2.appendChild( dew.create({ 
+		button: { 
+			innerHTML: "Hi!"
+		, listeners: { 
+				click: function () { dew.traverse( "@" ); }
+			}
+		}
+	}));
+	//after an XHR call this should be set...
+	//hmm, wonder what would happen when there is no root element 
 });
 </script>
 
@@ -370,6 +457,7 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 		<li><a href="#summary">summary</a></li>
 		<li><a href="#state">state</a></li>
 		<li><a href="#element">element generation</a></li>
+		<li><a href="#traversal">DOM traversal</a></li>
 		<li><a href="#xhrget">XMLHttpRequests (GET)</a></li>
 		<li><a href="#xhrpost">XMLHttpRequests (POST)</a></li>
 		<li><a href="#routing">routing</a></li>
@@ -407,6 +495,32 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 	<div class="generationTest">
 	</div>
 
+	<h3>DOM Traversal</h3>
+	<p>
+	Traversing elements
+	</p>
+	<h4>Code</h4>
+	<pre></pre>
+	<h4>Output</h4>
+	<div class="traversal">
+		<!-- The test root starts here. -->
+		<div class="example1">
+			<div class="child1">
+				<h2>Choose a Path my Friend</h2>
+			</div>
+			<div class="child2">
+				<h2>Choose Another Path, my Friend</h2>
+			</div>
+			<div class="child3">
+				<ul>
+					<li>The first walk.</li>
+					<li>The second walk.</li>
+					<li>The third walk.</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
 	<h3>XMLHttpRequest (GETs)</h3>
 	<p>
 	XMLHttpRequests using the GET method are silly simple to get going.
@@ -414,7 +528,7 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 	<h4>Code</h4>
 	<pre></pre>
 	<h4>Output</h4>
-	<div class="xhrTest">
+	<div class="xhrGetTest">
 	</div>
 
 	<h3>XMLHttpRequest (POSTs)</h3>
@@ -424,7 +538,7 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 	<h4>Code</h4>
 	<pre></pre>
 	<h4>Output</h4>
-	<div class="sendTest">
+	<div class="xhrPostTest">
 	</div>
 
 	<h3>Routing & Organization</h3>
@@ -446,6 +560,11 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 	<h4>Output</h4>
 	<div class="dommannipulationTest">
 	</div>
+
+	<h2>???</h2>
+	<p>
+	</p>
+	<h3></h3>
 
 	<h2>Glossary</h2>
 	<p>
@@ -476,6 +595,9 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 		<ul>
 			<li>ramar@tubularmodular.com</li>
 		</ul>
+	</div>
+
+	<div class="abovefooter" style="border: 1px solid blue; height: 100px; width: 100%;">
 	</div>
 
 	<footer>

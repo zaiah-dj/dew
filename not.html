@@ -1,0 +1,58 @@
+<html>
+
+<head>
+<script src="dew.js"></script>
+</head>
+
+<body>
+
+<script>
+//make it something else...
+var id = dew.cover( "#rockabee" );
+</script>
+
+<div id="rockabee" class="rockabee">
+</div>
+
+
+
+<script>
+document.addEventListener( "DOMContentLoaded", function (e) {
+//TODO: Add 'attributes' key...
+var d = {
+	div: {
+		p: "The first paragraph"
+	, div: {
+			h2: "Title A"
+		, p: "The cheeky thing is amazing."
+		}
+	, div: {
+			h2: "File Demo"
+		, p: "The cheeky thing is amazing."
+		, input: {
+				className: "wash"
+			, type: "numeric"
+			}
+		}
+	, listeners: {
+			click: function (ev) {
+				console.log( "clicked on parent div" );
+				console.log( dew.self() );
+			}	
+		}
+	}
+}
+
+var node = dew.create(d);
+console.log( node );
+//document.getElementById("chuck").appendChild( dew.create(d) );
+//dew.get("#chuck").appendChild( dew.create(d) );
+});
+</script>
+
+<div id="chuck" class="chuck">
+</div>
+
+</body>
+
+</html>
