@@ -177,6 +177,47 @@ dew = (function () {
 	}
 
 
+	//Return an object for use with event listeners
+	function bar ( a ) {
+		var scope = a;
+		return {
+		  id: function () {
+				return scope.id;
+			}
+			//Where are you in relation to everything else?
+		, position: function ( arg ) {
+				return 0;
+			}
+			//What is the reference to myself? (null for now)
+		, myself: function ( arg ) {
+				return null;
+			}
+		, root: function ( arg ) {
+				return scope.root;
+			}
+		, select: function ( arg ) {
+				return scope.root.querySelector( arg );	
+			}
+			//Use numeric incrementors to jump through the DOM
+		, step: function ( arg ) {
+				var p = parseInt( arg ); 
+				var element = scope.root;
+				//TODO: Positive movement doesn't make all that much sense...
+				if ( isNaN( p ) || p > 0 )
+					return null;
+				else if ( p < 0 ) {
+					while ( p++ ) { 
+						element = element[ "parentElement" ];
+					} 
+				} 
+			}
+			//Use unix-like conventions to traverse the path, stop at root
+		, path: function ( arg ) {
+				//TODO: This will be tricky...	
+			}
+		}
+	}
+
 
 	return {
 
@@ -185,8 +226,17 @@ dew = (function () {
 			me.debuggable = !me.debuggable; 
 		}	
 
-		//...
-	, self: function (args) {
+		//TODO: If you see this, maybe give things a way to set properties
+		//All of the input listeners can act on the element, and reject bad things 
+	, set: function (args) {
+			//TODO: This can also be called propset
+			//TODO: This makes more sense when initializing through 'create' and 'cover' 
+			;
+		}
+
+		//TODO: With 'set' above, I'm not sure that this makes that much sense...
+	, validate: function (args) {
+			;
 		}
 
 		//Generate random strings
@@ -373,11 +423,12 @@ dew = (function () {
 		}
 
 		//???
-	, create: function ( element, ref, n ) {
+	, create: function ( element, ref ) {
+			var scope = ( ref === undefined ) ? { id: this.rand( 30 ), root: null } : ref;
+//return (function() {
 			var node = null, children = [];
 			const keys = ["class", "className","children","id","innerHTML","style","listeners"];
-			var root = ( ref === undefined ) ? this.rand(30) : ref.root; 
-			var sc = { box: "none" };
+			//var root = ( ref === undefined ) ? this.rand(30) : ref.root; 
 			//we CAN handle strings
 			//div#id, div.class, div.class = something
 			if ( typeof element == "string" ) {
@@ -399,7 +450,7 @@ dew = (function () {
 					else if ( estr[0] == '=' )
 						node.innerHTML = estr.substr( 1, estr.length - 1 );
 					else {
-						node = document.createElement( estr );		
+						scope.root = node = document.createElement( estr );		
 					}
 					r = q.pos;
 				}
@@ -442,10 +493,10 @@ dew = (function () {
 									for ( var lf in l ) {
 										log( printf( "Adding listener $1 to element: ", lf ) );
 										if ( typeof l[lf] == 'function' )
-											el.addEventListener( lf, (function (scope) {
-												scope = scope; 
-												return l[lf] ;
-											})() );
+											el.addEventListener( lf, function (ev) {
+												//TODO: (or not) I believe it's possible to modify a function's prototype.  Will this make an element accessible within the function's scope (w/o further initialization)?  I don't know.
+												l[lf]( ev, bar( scope ) )  ;
+											} );
 										else if ( typeof l[lf] == 'object' && l[lf] instanceof Array ) {
 											for ( var ilf in l[lf] ) {
 												if ( typeof l[lf] == 'function' ) {
@@ -471,7 +522,7 @@ dew = (function () {
 							}
 							//TODO: If there are any elements left, run this on each of them. 
 							for ( var key in element[k] ) {
-								el.appendChild( this.create( { [ key ]: element[k][key] } ) );
+								el.appendChild( this.create( { [ key ]: element[k][key] }, scope ) );
 							}
 						}
 						node = el;
@@ -480,7 +531,9 @@ dew = (function () {
 			}
 			//node.self or node.root
 			//should always refer to the top level element 
-			return node;
+			return ( ref === undefined ) ? scope.root = node : node;
+			//return scope.root = node;
+//})();
 		}
 
 

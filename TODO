@@ -1,42 +1,27 @@
 
 
 - How does Webpack fit in?
+		dunno yet
 
 
-- cover may not be that important.  
-	create worked, but not really...
-	it is easy to create new elements this way. and easy to apply listeners too.
-	easiest way is to modify prototype
+- coming along... just need to think about interaction between elements 
+		(specifically sorting) 
 
 
-
-- traverse / cover / root
-	this isn't super important, but code will break less, root is different depending on where the create/cover took place
-
-	self needs to be the top
-	ref and n will never be modified at the root (not sure how to go about that yet)
+- create works nicely, cover is not yet implemented
 
 
-	one thing:
-		create calls a closure that keeps 'self' and some number at the top
-		this way dew.self() (or this.self()) can return a reference to the root without any other calcs
-		I might also just be able to call self, me, or root since inside the closure, we should have access
-		selectors work around this too
+- some things to consider:
+		talking to other things / components
+		clean callbacks (specifically XHR and Timeout or Animation)	
+		performance and memory (not sure how this is under load, but I doubt it's high)
+		sort, etc. - implement these
+		routing is not all that clean yet...
+		DOM failures?
+		sensible data structures (arrays for anything with multiple)
 
-		dew.ref( "@/div.peter" )  //select div.peter using root, so 
-															//$root.querySelector( "div.peter" );
-		dew.ref( "@", ".peter" )  //select div.peter using root, so 
-															//$root.querySelector( ".peter" );
-		( dew.@ may also work as a root node reference -> / )
+- to go:
+		_.path( ... )
+		_ as an accessible object within a listener...
+		chain different components...	
 
-		//Paths
-		dew.path( "../../a" );    //maps to parentElement.parentElement.a
-		dew.path( -2 );           //maps to parentElement.parentElement
-		dew.path( -2,"a" );       //maps to parentElement.parentElement.a
-		dew.path( 2 );            //maps to child.child
-		dew.path( 2,"a" );        //maps to child.child.a
-
-		dew.select( ".peter" );   //select div.peter using root
-		dew.select( /???/ );      //select divs using regex
-
-	

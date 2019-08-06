@@ -6,6 +6,12 @@
 
 <body>
 <script>
+function testdump( e, _ ) {
+	console.log( "Arguments: $1, $2", e, _ );
+	console.log( "Root ID:", _.id() );
+	console.log( "Root Node:", _.root() );
+}
+
 /*Declarative Nodes*/
 document.addEventListener( "DOMContentLoaded", function (ev) {
 	//Anytime we use 'dew.*', we are globally modifying dew.
@@ -14,21 +20,67 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 		button: {
 			innerHTML: "simple text"
 		, listeners: {
-				click: function ( ev ) { 
-					console.log( "Let's see the root: $1", scope );
+				click: function ( ev, _ ) {
+					//console.log( "Arguments: $1, $2", ev, _ );
+					console.log( "Root ID:", _.id() );
+					console.log( "Root Node:", _.root() );
+					console.log( "A path:", _.path("@/etc/bob" ));
+					console.log( "Selector from Root:", _.select( ".tassle" ));
 				}
 			}
 		}
 	}));
 
-	//what are you trying to do?
-	//write a function that can access the root node of something I create.
-	//1: with each new element, add a property called path?
-	//2: use a closure, and see if scope can be accessed (w/o lots of closures, this won't happen)
-	//3: a not so great way, but viable way to do it is making dew.scope global, and using ids and properties to get stuff
-	//i.e. object.property = id, dew.self or dew.root always returns the top level element and its path
+	//Try a bigger set of elements.
+	document.getElementById("app").appendChild( dew.create({ 
+		div: {
+			innerHTML: "This is an introduction!"
+		, listeners: {
+				click: function ( ev, _ ) {
+					testdump( ev, _ );
+				}
+			}
+		, h2: {
+				innerHTML: "We are the World!"
+			, style: "color: red;"
+			, className: "bigLogo"
+			}
+		, p: {
+				innerHTML: "Lorem ipsum dolor sit amet.  Witch boh can ke deepa"
+			}
+		, div: {
+				innerHTML: "This contains a button..."
+			, className: "zebra"
+			, button: {
+					innerHTML: "simple text"
+				, listeners: {
+						click: function ( ev, _ ) {
+							testdump( ev, _ );
+							//We're 3 levels in.
+							console.log( _.select( ".holder" ) );	
+							console.log( _.step( ".holder" ) || "Not a valid reference." );	
+							console.log( _.step( -2 ) );	
+						}
+					}
+				}
+			}
+		, span: {
+				className: "holder"
+			, div: {
+					p: "This is a paragraph in the holder div."	
+				}
+			}
+		, button: {
+				innerHTML: "simple text"
+			, listeners: {
+					click: function ( ev, _ ) {
+						testdump( ev, _ );
+					}
+				}
+			}
+		}
+	}));
 
-return;
 	//Declare a node.
 	var el = [
 		//Declare one last node.
