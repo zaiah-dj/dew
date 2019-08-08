@@ -35,211 +35,29 @@ TODO:
   -->
 <html>
 <head>
-
-<!-- Styles can go here for testing purposes -->
-<style>
-html {
-	background-color: rgb(240,248,255);
-}
-
-footer {
-	padding-top: 50px;
-}
-
-header {
-	display: block;
-	width: 96%;
-	padding-left: 2%;
-	padding-right: 2%;
-	height: 50px;
-	position: fixed;
-	top: 0px;
-	z-index: 99;
-}
-
-header div {
-	float: left;
-	width: 100px;
-	left: -10px;
-	top: 15px;
-	font-weight: bold;
-	font-style: italic;
-	position: relative;
-}
-
-header ul {
-	position: relative;
-	float: right;
-}
-
-header ul li {
-	padding: 0px;
-	top: 0px;
-	display: inline-block;
-	margin-left: 10px;
-}
-
-header ul li a ,
-header ul li a:visited {
-	text-decoration: none;
-	color: black;
-}
-
-header ul li a:hover {
-	text-decoration: underline;
-}
-
-
-.container {
-	background-color: white;
-	padding: 100px;
-	padding-right: 20px;
-	padding-left: 20px;
-	margin: 0 auto;
-	width: 70%;
-	min-width: 300px;
-	top: 50px;
-	position: relative;
-}
-
-.toc a {
-	text-transform: capitalize;
-}
-
-p {
-	font-size: 1.3em;
-	font-family: "Times New Roman", serif;
-}
-
-pre {
-	background-color: #ffffe0;
-	color: black;
-	font-size: 1.1em;
-}
-
-/*
-//Maybe really small widths shouldn't show up at all
-//Dew and some listeners can be used to selectively display pre code. 
-@media screen and (max-width: 700px) {
-	pre {
-		font-size: 1.1em;
-	}
-}
-
-@media screen and (max-width: 600px) {
-	pre {
-		font-size: 0.7em;
-	}
-}
-
-@media screen and (max-width: 400px) {
-	pre {
-		font-size: 0.7em;
-	}
-}
-*/
-
-.start {
-	text-align: center;
-	width: 100%;
-	height: 30%;
-	position: relative;
-}
-
-.start h1 {
-	position: relative;
-	margin: 0 auto;
-	top: 65%;
-	font-size: 170px;
-	text-align: center;
-	letter-spacing: -0.12em;
-}
-
-@media screen and (max-width: 700px) {
-	.start h1 {
-		font-size: 130px;
-	}
-}
-
-@media screen and (max-width: 600px) {
-	.start h1 {
-		font-size: 110px;
-	}
-}
-
-@media screen and (max-width: 400px) {
-	.start h1 {
-		font-size: 80px;
-	}
-}
-
-
-h2 {
-	font-size: 2.0em;
-	margin-top: 100px;
-	border-top: 1px solid black;
-}
-
-h3 {
-	font-size: 1.8em;
-}
-
-h4 {
-	font-size: 1.6em;
-}
-
-h5 {
-	font-size: 1.4em;
-}
-
-h6 {
-	font-size: 1.2em;
-}
-
-.glossary {
-	display: block;
-	width: 80%;
-}
-.glossary th {
-	text-align: left;
-}
-.glossary td:nth-child(1) {
-	width: 200px;
-}
-.glossary tr:nth-child(odd) {
-	background-color: pink;
-}
-.glossary tr:nth-child(even) {
-	background-color: red;
-}
-
-script {
-	display: block;
-}
-</style>
-
+<link rel="stylesheet" href="index.css">
 
 <!-- Include dew. -->
 <script src="dew.js"></script>
 <script>
-/*State*/
+/*Playing with state*/
 document.addEventListener( "DOMContentLoaded", function (ev) {
-
-	//This idea works fairly well...
+	//A simple, pure JS way to create a div and track state change.
 	var a = function() {
 		var state = { status:0 };
 		return function () {
 			//state
 			var div = document.createElement( "div" );
 			var p = document.createElement( "p" );
-			var h2 = document.createElement( "h2" );
+			var h3 = document.createElement( "h3" );
+			h3.style = "color: red; font-size: 15px; font-weight: bold;";	
 			var button = document.createElement( "button" );
 
 			p.innerHTML = "John Salley is a good basketball player.";
-			h2.innerHTML = "Title of This";
+			h3.innerHTML = "Title of This";
 			button.innerHTML = "Click Me!";
 
-			div.appendChild( h2 );
+			div.appendChild( h3 );
 			div.appendChild( p );
 			div.appendChild( button );
 
@@ -253,13 +71,26 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 		}
 	}
 
-	//Haha, this is so damned ugly...
+	//Using a closure, a's state is self contained...
 	var b;
 	(b = a())();
 
-	//Initialize some function and it's crap.
-	//dew.init();
-	dew.debuggable( 1 );
+	//With dew, it's just not necessary. (and takes up less lines of code)
+	document.querySelector( ".stateTest" ).appendChild( dew.create( {
+		div: {
+			p: "John Salley is a good basketball player."
+		, h2: { 
+				innerHTML: "Title of This"
+			, style: "color: red; font-size: 15px; font-weight: bold;"
+			}
+		, button: {
+				innerHTML: "Click Me!"
+			, listeners: { click: function (ev,_) {
+					_.self.style.backgroundColor = ( _.status = !_.status ) ? "red" : "blue";
+				}}
+			}
+		}
+	}) );
 });
 </script>
 
@@ -397,6 +228,10 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 </script>
 
 
+
+
+
+
 <script>
 //The app that tests all of the code on this page.
 document.addEventListener( "DOMContentLoaded", function (ev) {
@@ -451,28 +286,51 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 		<h1>dew.js</h1>
 	</div>
 
-	<h2>Quick Links</h2>
-	<div class="toc">
-	<ul>
-		<li><a href="#summary">summary</a></li>
-		<li><a href="#state">state</a></li>
-		<li><a href="#element">element generation</a></li>
-		<li><a href="#traversal">DOM traversal</a></li>
-		<li><a href="#xhrget">XMLHttpRequests (GET)</a></li>
-		<li><a href="#xhrpost">XMLHttpRequests (POST)</a></li>
-		<li><a href="#routing">routing</a></li>
-		<li><a href="#dom">DOM</a></li>
-		<li><a href="#glossary">glossary</a></li>
-	</ul>
-	</div>
 
 	<h2>Summary</h2>
-	<p>
-	<a>dew</a>.js is a lightweight Javascript framework.
-  It does not require webpack, use Babel, require Typescript 
-  or NPM or Yarn or any package manager.
-	It's features are listed below. 
-	</p>
+	<div>
+		<p>
+			<a>Dew</a> is a lightweight Javascript framework.
+			It does not require webpack, Babel, Typescript, NPM, Yarn or any package manager.
+			The following line is all that is needed to initialize it in your own web projects.
+			<div style="text-align: center; padding: 10px; margin-bottom: 10px; font-weight: bold; font-size: 1.4em; background-color: #ddd;">
+			<code>
+			&lt;script src="https://collinsdesign.net/dew-latest/dew.min.js"&gt;&lt;script&gt;
+			</code>
+			</div>
+		</p>
+
+		<p>
+			Dew can also be downloaded and hosted within your own project via <a href="https://collinsdesign.net/dew-latest/dew.min.js">this link</a>, or added to your build system via npm.  Please continue through the rest of this document to figure out more about what Dew can do for you.
+		</p>
+	</div>
+
+
+
+	<h2>Quick Links</h2>
+	<div class="toc">
+		<ul>
+			<li><a href="#summary">summary</a></li>
+			<li><a href="#state">state</a></li>
+			<li><a href="#element">element generation</a></li>
+			<li><a href="#traversal">DOM traversal</a></li>
+			<li><a href="#xhrget">XMLHttpRequests (GET)</a></li>
+			<li><a href="#xhrpost">XMLHttpRequests (POST)</a></li>
+			<li><a href="#routing">routing</a></li>
+			<li><a href="#dom">DOM</a></li>
+			<li><a href="#glossary">glossary</a></li>
+		</ul>
+	</div>
+
+
+
+	<h2>Recipes</h2>
+	<p>This section is TBD, and will contain a list of small self contained projects and code</p>
+	<ul class="recipes">
+		<li></li>	
+	</ul>
+
+
 
 	<h2>Features</h2>
 	<h3>State</h3>
@@ -484,6 +342,7 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 	<h4>Output</h4>
 	<div class="stateTest">
 	</div>
+
 
 	<h3>Element Generation</h3>
 	<p>
@@ -566,7 +425,9 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 	</p>
 	<h3></h3>
 
-	<h2>Glossary</h2>
+
+
+	<h2>Glossary / API</h2>
 	<p>
 	</p>
 	<div class="glossary">
@@ -590,12 +451,15 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 		</table>
 	</div>
 
+
+
 	<h2>Contact & Issues</h2>
-	<div class="glossary">
+	<div class="contact">
 		<ul>
 			<li>ramar@tubularmodular.com</li>
 		</ul>
 	</div>
+
 
 	<div class="abovefooter" style="border: 1px solid blue; height: 100px; width: 100%;">
 	</div>

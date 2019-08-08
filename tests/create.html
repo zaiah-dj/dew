@@ -93,8 +93,8 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 		,{ button: {
 				innerHTML: "simple text"
 			, listeners: {
-					click: function () { 
-						console.log( "Let's see the root: $1", scope.id );
+					click: function ( ev, _ ) { 
+						console.log( "Let's see the root: $1", _.id );
 					}
 				}
 			}

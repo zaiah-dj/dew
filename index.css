@@ -1,0 +1,179 @@
+/* index.css - styles for Dew test */
+html {
+	background-color: rgb(240,248,255);
+}
+
+footer {
+	padding-top: 50px;
+}
+
+header {
+	display: block;
+	width: 96%;
+	padding-left: 2%;
+	padding-right: 2%;
+	height: 50px;
+	position: fixed;
+	top: 0px;
+	z-index: 99;
+}
+
+header div {
+	float: left;
+	width: 100px;
+	left: -10px;
+	top: 15px;
+	font-weight: bold;
+	font-style: italic;
+	position: relative;
+}
+
+header ul {
+	position: relative;
+	float: right;
+}
+
+header ul li {
+	padding: 0px;
+	top: 0px;
+	display: inline-block;
+	margin-left: 10px;
+}
+
+header ul li a ,
+header ul li a:visited {
+	text-decoration: none;
+	color: black;
+}
+
+header ul li a:hover {
+	text-decoration: underline;
+}
+
+.container {
+	background-color: white;
+	padding: 100px;
+	padding-right: 20px;
+	padding-left: 20px;
+	margin: 0 auto;
+	width: 70%;
+	min-width: 300px;
+	top: 50px;
+	position: relative;
+}
+
+.toc a {
+	text-transform: capitalize;
+}
+
+p {
+	font-size: 1.3em;
+	font-family: "Times New Roman", serif;
+}
+
+pre {
+	background-color: #ffffe0;
+	color: black;
+	font-size: 1.1em;
+}
+
+/*
+//Maybe really small widths shouldn't show up at all
+//Dew and some listeners can be used to selectively display pre code. 
+@media screen and (max-width: 700px) {
+	pre {
+		font-size: 1.1em;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	pre {
+		font-size: 0.7em;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	pre {
+		font-size: 0.7em;
+	}
+}
+*/
+
+.start {
+	text-align: center;
+	width: 100%;
+	height: 30%;
+	position: relative;
+}
+
+.start h1 {
+	position: relative;
+	margin: 0 auto;
+	top: 65%;
+	font-size: 170px;
+	text-align: center;
+	letter-spacing: -0.12em;
+}
+
+@media screen and (max-width: 700px) {
+	.start h1 {
+		font-size: 130px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.start h1 {
+		font-size: 110px;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	.start h1 {
+		font-size: 80px;
+	}
+}
+
+
+h2 {
+	font-size: 3.0em;
+	padding-top: 0px;
+	margin-top: 120px;
+	border-bottom: 3px solid black;
+}
+
+h3 {
+	font-size: 2.5em;
+}
+
+h4 {
+	font-size: 2.0em;
+}
+
+h5 {
+	font-size: 1.4em;
+}
+
+h6 {
+	font-size: 1.2em;
+}
+
+.glossary {
+	display: block;
+	width: 80%;
+}
+.glossary th {
+	text-align: left;
+}
+.glossary td:nth-child(1) {
+	width: 200px;
+}
+.glossary tr:nth-child(odd) {
+	background-color: pink;
+}
+.glossary tr:nth-child(even) {
+	background-color: red;
+}
+
+script {
+	display: block;
+}
