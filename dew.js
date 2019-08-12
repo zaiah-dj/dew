@@ -116,8 +116,11 @@ dew = (function () {
 
 
 	return {
+		//A printf function.
+		printf: printf
+	
 		//Generate a set of elements.
-		debuggable: function () {
+	, debuggable: function () {
 			D = !D;
 		}	
 
@@ -300,7 +303,7 @@ dew = (function () {
 			(D) ? console.log( "=====\nRunning function 'create' on ", element ) : 0;
 			var scope = ( ref === undefined ) ? { id: this.rand( 30 ), root: null } : ref;
 			var node = null, children = [];
-			const keys = ["class", "className","children","id","innerHTML","style","type","placeholder","value","listeners","vars"];
+			const keys = ["attrs","attributes","class","className","children","id","innerHTML","style","src","type","placeholder","value","listeners","vars"];
 			if ( typeof element == "string" ) {
 				(D) ? console.log( printf( "Got string > $1", element ) ) : 0;
 				var tt = [];
@@ -367,9 +370,9 @@ dew = (function () {
 							for ( var kk of keys ) {
 								//TODO: How do I handle values that don't map cleanly?
 								//TODO: Simplify this
-								if ( kk != 'listeners' && kk != 'class' && kk != 'children' && kk in kref ) { 
-									console.log(printf( "$1Setting '$2' of element $3 to '$4'", tab, kk, k, kref[kk]));
-									el[ kk ] = kref[ kk ];
+								if (( kk == "attrs" || kk == "attributes" ) && kk in kref ) {
+									//TODO: Why is 'of' not allowed here?
+									for ( var vv in kref[ kk ] ) el[ vv ] = kref[ kk ][ vv ];
 								}
 								//children
 								else if ( kk == "children" && kk in kref ) {
@@ -398,6 +401,11 @@ dew = (function () {
 										}
 									}	
 								}
+								else if ( kk in kref ) { 
+									//console.log(printf( "$1Setting '$2' of element $3 to '$4'", tab, kk, k, kref[kk]));
+									el[ kk ] = kref[ kk ];
+								}
+								//set any attributes (might be easier, but there is more typing)
 							}
 							//Unset each of these.
 							for ( var key of keys ) {

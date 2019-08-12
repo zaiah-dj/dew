@@ -1,0 +1,211 @@
+<!--
+audio.html
+==========
+
+All of these
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+<script src="../dew.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script> 
+//Let's make a three song playlist.
+var songs = [
+  "static/2019-04-30--YerSmzle-160kbps.mp3"
+ ,"static/2019-04-30-Lone-LV-160kbps.mp3"
+ ,"static/2019-05-04--VoodooChile-160kbps.mp3"
+];
+</script> 
+
+<script> 
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	//Silly simple audio player. Obviously not as efficient as the tag.
+	dew.debuggable(1);
+	document.body.appendChild( dew.create({
+		div: {
+			className: "api"
+		, audio: {
+				attrs: { 
+					controls: 1 
+				, "cheeky": true 
+				}
+			, source: {
+					src: "../static/2019-05-04--VoodooChile-160kbps.mp3"
+				}
+			}
+		, div: {
+				className: "ap"
+			, innerHTML: "Click me to play music."
+			}
+		}
+	}));
+});
+</script> 
+<style>
+.api {
+	width: 100%;
+	height: 120px;
+	border: 1px solid black;
+}
+.ap {
+	width: 100%;
+	height: 30px;
+}
+.api audio {
+	width: 100%;
+	height: 50px;
+	border: 5px solid cyan;
+	background-color: #0303bb;
+}
+</style>
+
+<script> 
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	//The first was a fair attempt; however, let's try something a little less banal... 
+	function soundControl(ev,_) {
+		if ( ev.target.innerHTML == "play_arrow" )
+			_.select("audio").play();	
+		else if ( ev.target.innerHTML == "pause" )
+			_.select("audio").pause();	
+		else if ( ev.target.innerHTML == "fast_rewind" )
+			console.log( "play me" );
+		else if ( ev.target.innerHTML == "fast_forward" ) {
+			console.log( "play me" );
+		}
+	}
+
+	document.body.appendChild( dew.create({
+		div: {
+			id: "thereal"
+		, children: [
+				//TODO: "div.move > div.round"
+			  { div: { 
+						className: "move" 
+					, div: {
+							className: "round"
+						}
+					} 
+				}
+				//TODO: dew.printf( "audio src=$1", file ): { progress: function () { ; } } 
+				//(Really, the current version is much clearer...)
+			, { audio: { 
+						src: "../static/2019-04-30-Lone-LV-160kbps.mp3" 
+					, listeners: {
+							//TODO: the intention here is to let the user know that the audio is loaded.
+							//it would be nice to do from the component level.
+							load: function(x) { console.log( "audio loaded" ); }
+						, progress: function(x) { ; }
+						}
+					}
+				}
+				//TODO: Seems like certain tags really shouldn't need objects...
+				//ul & ol for example, can assume li as children
+				//divs could technically spawn content this way too, have to experiment...
+			, { ul: { 
+						//TODO: Functional declaration works even better, since the listener is the same.
+						//, innerHTML: dew.printf( "<i class='material-icons'>$1</i>", x )
+						children: ["play_arrow","fast_rewind","fast_forward","pause"].map(function (x) {
+							return { 
+								li: { 
+									className: x
+								, i: { className: "material-icons", innerHTML: x }
+								, listeners: { click: soundControl }
+								}
+							}
+						})
+						//TODO: The following declarations are much shorter... 
+						//TODO: Objects with functions can probably be listeners without being listeners
+						//[
+						//  "li.play > i.material-icons = play_arrow": { click: f() }
+						//, "li.rew > i.material-icons = fast_rewind": { click: f() }
+						//, "li.ff > i.material-icons = fast_forward": { click: f() }
+						//, "li.stop > i.material-icons = pause": { click: f() }
+						//].map( function(x) return dew.interpret( x ).addEventListener("click",f) )
+					} 
+				}
+				//"div > input[type=range,min=0,max=100]": { input: function(){ ; } }
+			, { div: {
+					input: { 
+						type: "range"
+					, attrs: { min: 0, step: 0.01, max: 1, value: 0.07 } 
+					, listeners: {
+							input: function (ev,_) { _.select("audio").volume = ev.target.value; }
+						}
+					}
+				} }
+			]
+		}
+	}) );
+
+	//Set audio here, just because I don't want to kill my ears...
+	//TODO: This should be done within the component really.  But since dew is global,
+	//the event can be assigned that way. Of course, the other way works too, so nothing breaks.
+	document.querySelector( "#thereal audio" ).volume = 0.07;
+});
+</script> 
+
+
+<style>
+#thereal {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	width: 100%;
+	height: 100px;
+	border: 2px solid black;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-gecko-border-radius: 10px;
+}
+
+#thereal .move {
+	width: 90%;
+	margin: 0 auto;
+	position: relative;
+	height: 10px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-gecko-border-radius: 5px;
+	background-color: #888;
+}
+
+#thereal .move .round {
+	height: 20px;
+	width: 20px;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-gecko-border-radius: 10px;
+	background-color: #333;
+	position: relative;
+	top: -5px;
+	left: 0px;
+}
+
+#thereal ul li {
+	display: inline-block;
+	list-style: none;
+	list-style-type: none;
+	margin: 0 auto;
+	width: 40px;
+	height: 40px;
+	border-radius: 30px;
+	-moz-border-radius: 30px;
+	-gecko-border-radius: 30px;
+	border: 3px solid black;
+	transition: background-color 0.2s, color 0.2s;
+}
+#thereal ul li i {
+	font-size: 2.5em;
+}
+#thereal ul li:hover {
+	background-color: blue;
+}
+#thereal ul li:hover i {
+	color: cyan;
+}
+</style>
+
+
+<body>
+</body>
+</html>

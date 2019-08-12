@@ -1,0 +1,116 @@
+<!-- vform.html - Validate things on a form -->
+<html>
+<head>
+<script src="../dew.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script> 
+//Here is a fairly quick form validation example.  A green smiley will show 
+//if the details were right. A red frowny will show otherwise...
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	document.body.appendChild( dew.create({ 
+		form: {
+			listeners: {
+				//TODO: Real strange things are happening when applying multiple listeners...
+				//keydown: function() { ; }
+			  submit: function(ev,_) { 
+					ev.preventDefault();
+					//This works, but doesn't add multiple class names...
+					//_.root().appendChild( dew.create( "i.material-icons = sentiment_very_satisfied" ) );
+					_.root().appendChild( dew.create({ 
+						i: { 
+							className:'material-icons success'
+						, innerHTML: "sentiment_very_satisfied" 
+						}
+					}));
+					return false;
+				}
+			}
+		, children: [
+			/*
+			//TODO: Hmm, this doesn't seem to work?
+				"label = Username"
+			, "input"
+			, "label = Password"
+			, "input[type=password]"
+			, "div.uselessBrandIcon"
+			  { div: { i: { className: "material-icon", innerHTML: "public" } } }
+			*/
+			  { div: { img: { src: "../static/pandapanda.jpg" } } } 
+			, { label: "Username" }
+			, { input: { type: "text" } }
+			, { label: "Password" }
+			, { input: { type: "password" } }
+			, { button: "Submit" }
+			]	
+		}
+	}))
+});
+</script> 
+<style>
+form {
+	width: 50%;
+	min-width: 250px;
+	margin: 0 auto;
+	min-height: 300px;
+	height: 50%;
+	position: relative;
+	top: 100px;
+	border: 1px solid #aaa;
+	padding: 10px;
+}
+
+form label, form input {
+	display: block;
+	width: 100%;
+	margin-bottom: 3px;
+}
+
+form label { 
+	margin-top: 10px;
+}
+
+form input { 
+	margin-bottom: 10px;
+	font-size: 1.3em;
+	padding: 5px;
+}
+
+form button {
+	float: right;
+	width: 80px;
+	height: 35px;
+}
+
+form div:nth-child(1) img {
+	width: 120px;
+	height: 120px;
+	margin: 0 auto;
+	position: relative;
+	left: 50%;
+	margin-left: -60px;
+	border-radius: 60px;
+	-moz-border-radius: 60px;
+	-gecko-border-radius: 60px;
+}
+.success {
+	color: green;
+	font-size: 4em;
+	text-align: center;
+	width: 100%;
+}
+.failure {
+	color: red;
+}
+</style>
+</head>
+<body>
+<!--
+<div>
+	<label>Username</label>
+	<input type="text">
+	<label>Password</label>
+	<input type="password">
+</div>
+-->
+</body>
+</html>
