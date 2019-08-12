@@ -147,19 +147,15 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 	for ( var n=0; n<d.length; n++ ) {
 		document.getElementsByClassName( "generationTest" )[0].appendChild( d[n] );		
 	}	
-
 });
 </script>
+
 
 <script>
 //Traversal
 document.addEventListener( "DOMContentLoaded", function (ev) {
 	//Use the element in the div.
-	var d1 = document.querySelector( ".traversal .example1" );
-	
-	//Show something and modify something...
-	//dew.traverse( d1, "@" );
-
+	//var d1 = document.querySelector( ".traversal .example1" );
 	//Generate a new element and run on that too
 	var d2 = {
 		div: {
@@ -170,12 +166,9 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 			} 
 		}
 	}
-
-	//Show something and modify something...
-
-	//Finally, try something that relies on a timeout
 });
 </script>
+
 
 <script>
 //XMLHttpRequest - GET
@@ -229,9 +222,6 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 
 
 
-
-
-
 <script>
 //The app that tests all of the code on this page.
 document.addEventListener( "DOMContentLoaded", function (ev) {
@@ -269,207 +259,252 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 
 
 <body>
-
-<header>
-<div>dew.js</div>
-<ul>
-	<li><a href="/">Links</a></li>
-	<li><a href="/">Recipes</a></li>
-	<li><a href="/">Docs</a></li>
-	<li><a href="/">Help</a></li>
-	<li><a href="/">Contact</a></li>
-</ul>
-</header>
-
-<div class="container">
-	<div class="start">
-		<h1>dew.js</h1>
-	</div>
-
-
-	<h2>Summary</h2>
-	<div>
-		<p>
-			<a>Dew</a> is a lightweight Javascript framework.
-			It does not require webpack, Babel, Typescript, NPM, Yarn or any package manager.
-			The following line is all that is needed to initialize it in your own web projects.
-			<div style="text-align: center; padding: 10px; margin-bottom: 10px; font-weight: bold; font-size: 1.4em; background-color: #ddd;">
-			<code>
-			&lt;script src="https://collinsdesign.net/dew-latest/dew.min.js"&gt;&lt;script&gt;
-			</code>
-			</div>
-		</p>
-
-		<p>
-			Dew can also be downloaded and hosted within your own project via <a href="https://collinsdesign.net/dew-latest/dew.min.js">this link</a>, or added to your build system via npm.  Please continue through the rest of this document to figure out more about what Dew can do for you.
-		</p>
-	</div>
-
-
-
-	<h2>Quick Links</h2>
-	<div class="toc">
+	<header>
+		<div>dew.js</div>
 		<ul>
-			<li><a href="#summary">summary</a></li>
-			<li><a href="#state">state</a></li>
-			<li><a href="#element">element generation</a></li>
-			<li><a href="#traversal">DOM traversal</a></li>
-			<li><a href="#xhrget">XMLHttpRequests (GET)</a></li>
-			<li><a href="#xhrpost">XMLHttpRequests (POST)</a></li>
-			<li><a href="#routing">routing</a></li>
-			<li><a href="#dom">DOM</a></li>
-			<li><a href="#glossary">glossary</a></li>
-		</ul>
-	</div>
-
-
-
-	<h2>Recipes</h2>
-	<p>This section is TBD, and will contain a list of small self contained projects and code</p>
-	<ul class="recipes">
-		<li></li>	
-	</ul>
-
-
-
-	<h2>Features</h2>
-	<h3>State</h3>
-	<p>
-	State is managed via closures.
-	</p>
-	<h4>Code</h4>
-	<pre></pre>
-	<h4>Output</h4>
-	<div class="stateTest">
-	</div>
-
-
-	<h3>Element Generation</h3>
-	<p>
-	Elements are just declared in simple JSON structures.
-	</p>
-	<h4>Code</h4>
-	<pre></pre>
-	<h4>Output</h4>
-	<div class="generationTest">
-	</div>
-
-	<h3>DOM Traversal</h3>
-	<p>
-	Traversing elements
-	</p>
-	<h4>Code</h4>
-	<pre></pre>
-	<h4>Output</h4>
-	<div class="traversal">
-		<!-- The test root starts here. -->
-		<div class="example1">
-			<div class="child1">
-				<h2>Choose a Path my Friend</h2>
-			</div>
-			<div class="child2">
-				<h2>Choose Another Path, my Friend</h2>
-			</div>
-			<div class="child3">
+			<li><a href="/">Links</a></li>
+			<li>
+				<a href="#recipes">Recipes</a>
 				<ul>
-					<li>The first walk.</li>
-					<li>The second walk.</li>
-					<li>The third walk.</li>
+					<li><a href="a">a</a></li>
+				</ul>
+			</li>
+			<li><a href="#glossary">Glossary</a></li>
+			<li><a href="#contact">Contact</a></li>
+			<li><a href="/">Help</a></li>
+		</ul>
+	</header>
+
+	<div class="container">
+
+		<div class="start">
+			<h1>dew.js</h1>
+		</div>
+
+
+		<!-- ## Summary -->
+		<div>
+			<h2>Summary</h2>
+			<div>
+				<p>
+					<a>Dew</a> is a lightweight Javascript framework.
+					It does not require webpack, Babel, Typescript, NPM, Yarn or any package manager.
+					The following line is all that is needed to initialize it in your own web projects.
+					<div style="text-align: center; padding: 10px; margin-bottom: 10px; font-weight: bold; font-size: 1.4em; background-color: #ddd;">
+					<code>
+					&lt;script src="https://collinsdesign.net/dew-latest/dew.min.js"&gt;&lt;script&gt;
+					</code>
+					</div>
+				</p>
+
+				<p>
+					Dew can also be downloaded and hosted within your own project via <a href="https://collinsdesign.net/dew-latest/dew.min.js">this link</a>, or added to your build system via npm.  Please continue through the rest of this document to figure out more about what Dew can do for you.
+				</p>
+			</div>
+		</div>
+
+
+		<!-- ## Table of Contents -->
+		<div class="toc">
+			<h2>Quick Links</h2>
+			<ul>
+				<li><a href="#state">state</a></li>
+				<li><a href="#element">element generation</a></li>
+				<li><a href="#traversal">DOM traversal</a></li>
+	<!--
+				<li><a href="#xhrget">XMLHttpRequests (GET)</a></li>
+				<li><a href="#xhrpost">XMLHttpRequests (POST)</a></li>
+				<li><a href="#routing">routing</a></li>
+				<li><a href="#dom">DOM</a></li>
+				<li><a href="#glossary">glossary</a></li>
+	-->
+			</ul>
+		</div>
+
+
+		<!-- ## Recipes -->
+		<div id="recipes">
+			<h2>Recipes</h2>
+			<style>
+			.recipes li {
+				display: inline-block;
+				border: 1px solid black;
+				width: 200px;
+				height: 200px;
+				margin: 0 auto;
+			}
+			</style>
+			<p>This section is TBD, and will contain a list of small self contained projects and code</p>
+			<ul class="recipes">
+				<li></li>	
+			</ul>
+		</div>
+
+
+		<!-- ## Features -->
+		<div>
+			<h2>Features</h2>
+
+			<!-- State Management -->
+			<div>
+				<h3>State</h3>
+				<p>
+				State is managed via closures.
+				</p>
+				<h4>Code</h4>
+				<pre></pre>
+				<h4>Output</h4>
+				<div class="stateTest">
+				</div>
+			</div>
+
+
+			<!-- Element generation -->
+			<div>
+				<h3>Element Generation</h3>
+				<p>
+				Elements are just declared in simple JSON structures.
+				</p>
+				<h4>Code</h4>
+				<pre></pre>
+				<h4>Output</h4>
+				<div class="generationTest">
+				</div>
+			</div>
+
+
+			<!-- DOM Traversal -->
+			<div>
+				<h3>DOM Traversal</h3>
+				<p>
+				Traversing elements
+				</p>
+				<h4>Code</h4>
+				<pre></pre>
+				<h4>Output</h4>
+				<div class="traversal">
+					<!-- The test root starts here. -->
+					<div class="example1">
+						<div class="child1">
+							<h2>Choose a Path my Friend</h2>
+						</div>
+						<div class="child2">
+							<h2>Choose Another Path, my Friend</h2>
+						</div>
+						<div class="child3">
+							<ul>
+								<li>The first walk.</li>
+								<li>The second walk.</li>
+								<li>The third walk.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- XHR Get -->
+			<div>
+				<h3>XMLHttpRequest (GETs)</h3>
+				<p>
+				XMLHttpRequests using the GET method are silly simple to get going.
+				</p>
+				<h4>Code</h4>
+				<pre></pre>
+				<h4>Output</h4>
+				<div class="xhrGetTest">
+				</div>
+			</div>
+
+			<!-- XHR Post -->
+			<div>
+				<h3>XMLHttpRequest (POSTs)</h3>
+				<p>
+				XMLHttpRequests using the POST method are equally simple, but more so.
+				</p>
+				<h4>Code</h4>
+				<pre></pre>
+				<h4>Output</h4>
+				<div class="xhrPostTest">
+				</div>
+			</div>
+
+
+			<!-- Routing -->
+			<div>
+				<h3>Routing & Organization</h3>
+				<p>
+				Creating a single page app can be done by defining a data structure.
+				</p>
+				<h4>Code</h4>
+				<pre></pre>
+				<h4>Output</h4>
+				<div class="routeTest">
+				</div>
+			</div>
+
+			<!-- DOM Manipulation -->
+			<div>
+				<h3>DOM Manipulation</h3>
+				<p>
+				Manipulation can be done via traversal.
+				</p>
+				<h4>Code</h4>
+				<pre></pre>
+				<h4>Output</h4>
+				<div class="dommannipulationTest">
+				</div>
+			</div>
+		</div>
+
+
+		<!-- ## Glossary -->
+		<div id="glossary">
+			<h2>Glossary / API</h2>
+			<p></p>
+			<div class="glossary">
+				<table>
+					<thead>
+						<th>Method</th>
+						<th>Usage</th>
+						<th>Result</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>dew.rand( <i>integer</i> n )</td>
+							<td>
+								var a = dew.rand( 23 );
+							</td>
+							<td id="dew_rand">
+								<script>document.getElementById("dew_rand").innerHTML = dew.rand( 23 )</script>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+
+
+		<!-- ## Contact & Issues -->
+		<div id="contact">
+			<h2>Contact & Issues</h2>
+			<div class="contact">
+				<ul>
+					<li>ramar@tubularmodular.com</li>
 				</ul>
 			</div>
 		</div>
+
+
+		<div class="abovefooter" style="border: 1px solid blue; height: 100px; width: 100%;">
+		</div>
+
+		<footer>
+		Copyright 2019 Tubular Modular Inc.<br />
+		This site designed by <a href="http://tubularmodular.com">Tubular Modular Inc.</a>
+		</footer>
 	</div>
-
-	<h3>XMLHttpRequest (GETs)</h3>
-	<p>
-	XMLHttpRequests using the GET method are silly simple to get going.
-	</p>
-	<h4>Code</h4>
-	<pre></pre>
-	<h4>Output</h4>
-	<div class="xhrGetTest">
-	</div>
-
-	<h3>XMLHttpRequest (POSTs)</h3>
-	<p>
-	XMLHttpRequests using the POST method are equally simple, but more so.
-	</p>
-	<h4>Code</h4>
-	<pre></pre>
-	<h4>Output</h4>
-	<div class="xhrPostTest">
-	</div>
-
-	<h3>Routing & Organization</h3>
-	<p>
-	Creating a single page app can be done by defining a data structure.
-	</p>
-	<h4>Code</h4>
-	<pre></pre>
-	<h4>Output</h4>
-	<div class="routeTest">
-	</div>
-
-	<h3>DOM Manipulation</h3>
-	<p>
-	Manipulation can be done via traversal.
-	</p>
-	<h4>Code</h4>
-	<pre></pre>
-	<h4>Output</h4>
-	<div class="dommannipulationTest">
-	</div>
-
-	<h2>???</h2>
-	<p>
-	</p>
-	<h3></h3>
-
-
-
-	<h2>Glossary / API</h2>
-	<p>
-	</p>
-	<div class="glossary">
-		<table>
-			<thead>
-				<th>Method</th>
-				<th>Usage</th>
-				<th>Result</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td>dew.rand( <i>integer</i> n )</td>
-					<td>
-						var a = dew.rand( 23 );
-					</td>
-					<td id="dew_rand">
-						<script>document.getElementById("dew_rand").innerHTML = dew.rand( 23 )</script>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-
-
-
-	<h2>Contact & Issues</h2>
-	<div class="contact">
-		<ul>
-			<li>ramar@tubularmodular.com</li>
-		</ul>
-	</div>
-
-
-	<div class="abovefooter" style="border: 1px solid blue; height: 100px; width: 100%;">
-	</div>
-
-	<footer>
-	Copyright 2019 Tubular Modular Inc.<br />
-	This site designed by <a href="http://tubularmodular.com">Tubular Modular Inc.</a>
-	</footer>
-
-</div>
 </body>
 
 </html>

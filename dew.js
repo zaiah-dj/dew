@@ -11,14 +11,20 @@
  * ------
  * ramar@tubularmodular.com
  * 
+ * TODO
+ * ----
+ * - in create: vars should only be done once, and kept in 'scope'
  * ---------------------------------------------- */
 
 dew = (function () {
-
+	//debuggable variable for easy ternary	
+	var D = 0;
 	//state for just dew
 	var me = {
 		//Debuggable or not?
-		debuggable: 0
+		debuggable: function () {
+			return (D = !D);
+		}		 
 
 	 	//Spots for self can be arrays
 	};
@@ -34,7 +40,7 @@ dew = (function () {
 	}
 
 
-	//private: log things
+	//private: console.log things
 	function log ( str ) {
 		if ( me.debuggable ) {
 			console.log( str );
@@ -64,116 +70,6 @@ dew = (function () {
 		//$("div>p>h2")	
 
 		//Feels like this might be kind of slow, but meh
-	}
-
-
-	//This should control node creation.
-	function mknode( element, scope, ref, n ) {
-		var node = null, children = [];
-		const keys = ["class", "className","children","id","innerHTML","style","listeners"];
-		n++;
-
-		//we CAN handle strings
-		//div#id, div.class, div.class = something
-		if ( typeof element == "string" ) {
-			var tt = [];
-			for ( var v, k=0, t = [ "#",".","=" ]; k<t.length; k++ )
-				if (( v = element.indexOf( t[k] )) > -1 ) tt.push( { chr: t[k], pos: v } );
-
-			//Do some chopping
-			var y = tt.sort( function (a,b) { return a.pos - b.pos; } );
-			//TODO: Trim the 'element'
-			for ( var estr, q, r=0, jj=0; jj <= tt.length; jj++ ) { 
-				q = ( tt[ jj ] !== undefined ) ? tt[ jj ] : { pos: element.length }; 
-				if ( (estr = element.substr( r, q.pos - r ))[0] == '#' )
-					node.id = estr.substr( 1, estr.length - 1 );
-				else if ( estr[0] == '.' ) 
-					node.className = estr.substr( 1, estr.length - 1 );
-				else if ( estr[0] == '=' && estr[1] == ' ' )
-					node.innerHTML = estr.substr( 2, estr.length - 2 );
-				else if ( estr[0] == '=' )
-					node.innerHTML = estr.substr( 1, estr.length - 1 );
-				else {
-					node = document.createElement( estr );		
-				}
-				r = q.pos;
-			}
-			n--;
-			return node;
-		}
-		else if ( typeof element == "object" ) {
-			//Array	
-			if ( element instanceof Array )	{
-			}	
-			//Object
-			else {
-				//the root element is the root element (node)
-				for ( var k in element ) {
-					log( printf( "$1 is $2", k, element[ k ] ) );
-
-					//create the element
-					var el = document.createElement( k );
-
-					//if v is a simple value, its a text node.
-					if ( typeof element[k] != 'object' ) {
-						log( printf( "Setting $1 = '$2'", "el.innerHTML", element[ k ] ) );
-						el.innerHTML = element[ k ];
-					}
-
-					else if ( element[k] instanceof Array )	{ 
-						//likewise, if an array is applied and all the values are simple, it's probably a list...
-					}
-
-					else {
-						if ( "class" in element[k] ) el.className = element[k]["class"]; 
-						if ( "className" in element[k] ) el.className = element[k]["className"];
-						if ( "id" in element[k] ) el.id = element[k]["id"];
-						if ( "innerHTML" in element[k] ) el.innerHTML = element[k]["innerHTML"];
-						//TODO: Double check this...
-						if ( "style" in element[k] ) el.style = element[k]["style"]
-						//Apply listeners... 
-						if ( "listeners" in element[k] ) {
-							var l = element[k]["listeners"];
-							if ( typeof l == "object" && l instanceof Object ) {
-								for ( var lf in l ) {
-									log( printf( "Adding listener $1 to element: ", lf ) );
-									if ( typeof l[lf] == 'function' )
-										el.addEventListener( lf, l[lf] );
-									else if ( typeof l[lf] == 'object' && l[lf] instanceof Array ) {
-										for ( var ilf in l[lf] ) {
-											if ( typeof l[lf] == 'function' ) {
-												el.addEventListener( lf, l[lf][ilf] );
-											}
-										}
-									}
-								}
-							}	
-						}
-						//children
-						if ( "children" in element[k] ) {
-							for ( var vv in element[k]["children"] ) {
-								//children.push( this.create( element[k]["children"] ) );	
-							}
-						}
-						//Unset each of these.
-						for ( var key in keys ) {
-							if ( keys[key] in element[k] ) {
-								log( printf( "Deleting key '$1'", keys[key] ) );
-								delete element[k][ keys[key] ];
-							}
-						}
-						//TODO: If there are any elements left, run this on each of them. 
-						for ( var key in element[k] ) {
-							el.appendChild( mknode( { [ key ]: element[k][key] }, {}, n  ) );
-						}
-					}
-					node = el;
-				}
-			}
-		}
-		//node.self or node.root
-		//should always refer to the top level element 
-		return node;
 	}
 
 
@@ -220,10 +116,9 @@ dew = (function () {
 
 
 	return {
-
 		//Generate a set of elements.
 		debuggable: function () {
-			me.debuggable = !me.debuggable; 
+			D = !D;
 		}	
 
 		//TODO: If you see this, maybe give things a way to set properties
@@ -241,15 +136,15 @@ dew = (function () {
 
 		//Generate random strings
 	, rand: function ( length ) {
-			/*
 			function getRandomInt(min, max) {
 				return Math.floor(Math.random() * (max - min)) + min;
 			}
-			*/
 			const str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 			var rS="";
+			//var rss[] = <allocate the buffer to write to>;
+			for (var n=0; n < length; n++) rS += str[ getRandomInt(0, str.length) ];
 			//rS += str[ getRandomInt(0, alphaStr.length) ];
-			for (var n=0; n < length; n++) rS+=str[ Math.floor(Math.random() * n) ];
+			//for (var n=0; n < length; n++) rS+=str[ Math.floor(Math.random() * n) ];
 			return rS;
 		}
 
@@ -258,12 +153,13 @@ dew = (function () {
 	, cover: function ( arg ) {
 			//Objects just need an environment, somewhere...
 			if ( typeof arg != "string" ) {
-				console.log( 'got string at cover' );
+				(D) ? console.log( 'got string at cover' ) : 0;
 			}
 			else {
 
 			}
 		}	
+
 
 		//First argument is either a DOM element or a string
 	, traverse: function (args) {
@@ -280,7 +176,7 @@ dew = (function () {
 			//B) another way is to check for a member in the parent... (but how do I know
 			//which parent?)
 			//as long as dew.create works on a root element, 'A' will be fine. 
-			console.log( dom, tstring );
+			(D) ? console.log( dom, tstring ) : 0;
 
 			//This is really best for testing the conversion of traversal string to selector 
 		}
@@ -318,7 +214,7 @@ dew = (function () {
 			return {
 				init: function ( ) {
 					//Loop through the elements in the route specified.
-					//	( VERBOSE ) ? console.log( "Loading handlers for route '" + loc + "'" ) : 0;
+					(D) ? console.log( "Loading handlers for route '" + loc + "'" ) : 0;
 					for ( r in local.routes ) {
 						if ( local.currentLocation.indexOf( r ) > -1 ) {
 							for ( t in local.routes[ r ] ) {
@@ -327,12 +223,12 @@ dew = (function () {
 									//Find the DOM elements This call will only fail if the syntax of the selector was wrong.
 									//TODO: Would it be helpful to let the dev know that this has occurred and on which index?
 									dom = [].slice.call( document.querySelectorAll( tt.domSelector ) );
-									( local.verbose ) ? console.log( "Binding to '" + tt.domSelector + "'.  Element references below:" ) : 0;
-									( local.verbose ) ? console.log( dom ) : 0;
+									(D) ? console.log( "Binding to '" + tt.domSelector + "'.  Element references below:" ) : 0;
+									(D) ? console.log( dom ) : 0;
 								}
 								catch ( e ) {
 									//TODO: Handle SYNTAX_ERR using e.name 
-									console.log( e.message );
+									(D) ? console.log( e.message ) : 0 ;
 								}
 							
 								//Apply attributes first
@@ -342,7 +238,7 @@ dew = (function () {
 									//handle strings and common things like 'required' or 'checked'
 									for ( d in dom ) {
 										for ( key in tt.attr ) {
-											( local.verbose ) ? console.log( "Setting key '" + key + "' to '" + tt.attr[ key ] + "'" + " on element " + tt.domSelector + "(" + d + ")"  ) : 0;
+											( local.verbose ) ? console.console.log( "Setting key '" + key + "' to '" + tt.attr[ key ] + "'" + " on element " + tt.domSelector + "(" + d + ")"  ) : 0;
 											dom[d].setAttribute( key, tt.attr[ key ] );
 										} 	
 									} 	
@@ -350,21 +246,21 @@ dew = (function () {
 
 								//Bind function(s) to event
 								if ( typeof tt.f === 'function' && typeof tt.event === 'string' ) {
-									( local.verbose ) ? console.log( "Binding single function " + tt.f.name + " \n\n" ) : 0;
+									( local.verbose ) ? console.console.log( "Binding single function " + tt.f.name + " \n\n" ) : 0;
 									for ( d in dom ) { 
-										( local.verbose ) ? dom[ d ].addEventListener( tt.event, (function(fname) { f = fname; return function(ev){console.log("Calling " + f); }})(tt.f.name) ) : 0;
+										( local.verbose ) ? dom[ d ].addEventListener( tt.event, (function(fname) { f = fname; return function(ev){console.console.log("Calling " + f); }})(tt.f.name) ) : 0;
 										dom[ d ].addEventListener( tt.event, tt.f ); 
 									}
 								}
 								else if ( typeof tt.f === 'object' && typeof tt.event === 'string' ) {
-									( local.verbose ) ? console.log( "Binding multiple functions" ) : 0;
+									( local.verbose ) ? console.console.log( "Binding multiple functions" ) : 0;
 									for ( d in dom ) {
 										for ( ff in tt.f ) {
 											( local.verbose ) ? dom[d].addEventListener( tt.event, whatFunct.bind( null, tt.f[ff].name ) ) : 0;
 											dom[d].addEventListener( tt.event, tt.f[ ff ] ); 
 										}
 									}
-									( local.verbose ) ? console.log( "\n\n" ) : 0;
+									( local.verbose ) ? console.console.log( "\n\n" ) : 0;
 								}
 							}
 						}
@@ -374,30 +270,6 @@ dew = (function () {
 		}
 
 
-		//Generate a set of elements.
-	, crbot: function ( element ) {
-			//The point is, that within this created (or covered) element, I should
-			//always be able to access the element's state and it's root node (and
-			//all of it's children).  We can already do that, but we write it this 
-			//way to prevent common problems (like exceptions due to some markup changing)
-			//we also want to handle dumb things like blank text nodes...
-
-			//Each new element ought to now have a scope of its own. 
-			var scope = { id: this.rand( 30 ) };
-
-			//Just run mknode now...
-			var ref = {};
-
-			var index = 0;
-			var p = mknode( element, scope, ref, index );
-			console.log( p.Prototype );
-
-			//regular old scopes didn't seem to work...
-			//probably need to use objects and methods, unfortunately...
-			return p;
-		} 
-
-	
 		//
 	, check: function ( ) {
 			var state = 0;
@@ -405,10 +277,10 @@ dew = (function () {
 			ne.innerHTML = "click me";
 			return {
 				a: function () {
-					console.log( state );
+					console.console.log( state );
 				}
 			, b: function () {
-					console.log( state++ );
+					console.console.log( state++ );
 				}
 			, node: function () {
 					return ne;
@@ -422,16 +294,15 @@ dew = (function () {
 
 		}
 
-		//???
+		//This function can create elements by strings or objects.	
+		//div#id, div.class, div.class = something
 	, create: function ( element, ref ) {
+			(D) ? console.log( "=====\nRunning function 'create' on ", element ) : 0;
 			var scope = ( ref === undefined ) ? { id: this.rand( 30 ), root: null } : ref;
-//return (function() {
 			var node = null, children = [];
-			const keys = ["class", "className","children","id","innerHTML","style","listeners"];
-			//var root = ( ref === undefined ) ? this.rand(30) : ref.root; 
-			//we CAN handle strings
-			//div#id, div.class, div.class = something
+			const keys = ["class", "className","children","id","innerHTML","style","type","placeholder","value","listeners","vars"];
 			if ( typeof element == "string" ) {
+				(D) ? console.log( printf( "Got string > $1", element ) ) : 0;
 				var tt = [];
 				for ( var v, k=0, t = [ "#",".","=" ]; k<t.length; k++ )
 					if (( v = element.indexOf( t[k] )) > -1 ) tt.push( { chr: t[k], pos: v } );
@@ -457,72 +328,85 @@ dew = (function () {
 				return node;
 			}
 			else if ( typeof element == "object" ) {
+				(D) ? console.log( printf( "Got object > $1", element ) ) : 0;
 				//Array	
 				if ( element instanceof Array )	{
+					(D) ? console.log( "'$1' in ...", element ) : 0;
 				}	
 				//Object
 				else {
 					//the root element is the root element (node)
+					var ind = 1;
+					var tab = Array(ind).fill("\t").join('');
 					for ( var k in element ) {
-						log( printf( "$1 is $2", k, element[ k ] ) );
+						(D) ? console.log( printf( "$1$2 is $3", tab, k, element[ k ] ) ) : 0;
+						
+						//TODO: Handle this later...
+						if ( k == "vars" ) {
+							(D) ? console.log( printf("$1Found key 'vars'.  Going to next...",tab), "\n\t$$" ) : 0;
+							continue;
+						}
 
 						//create the element
 						var el = document.createElement( k );
+						var kref = element[k];
 
 						//if v is a simple value, its a text node.
-						if ( typeof element[k] != 'object' ) {
-							log( printf( "Setting $1 = '$2'", "el.innerHTML", element[ k ] ) );
-							el.innerHTML = element[ k ];
+						if ( typeof kref != 'object' ) {
+							(D) ? console.log(printf("Setting element '$1' = '$2'", "el.innerHTML", kref)) : 0;
+							el.innerHTML = kref;
 						}
 
-						else if ( element[k] instanceof Array )	{ 
+						else if ( kref instanceof Array )	{ 
 							//likewise, if an array is applied and all the values are simple, it's probably a list...
+							(D) ? console.log(printf("$1 is array", kref)) : 0;
 						}
 
 						else {
-							if ( "class" in element[k] ) el.className = element[k]["class"]; 
-							if ( "className" in element[k] ) el.className = element[k]["className"];
-							if ( "id" in element[k] ) el.id = element[k]["id"];
-							if ( "innerHTML" in element[k] ) el.innerHTML = element[k]["innerHTML"];
-							//TODO: Double check this...
-							if ( "style" in element[k] ) el.style = element[k]["style"]
-							//Apply listeners... 
-							if ( "listeners" in element[k] ) {
-								var l = element[k]["listeners"];
-								if ( typeof l == "object" && l instanceof Object ) {
-									for ( var lf in l ) {
-										log( printf( "Adding listener $1 to element: ", lf ) );
-										if ( typeof l[lf] == 'function' )
-											el.addEventListener( lf, function (ev) {
-												//TODO: (or not) I believe it's possible to modify a function's prototype.  Will this make an element accessible within the function's scope (w/o further initialization)?  I don't know.
-												l[lf]( ev, bar( scope ) )  ;
-											} );
-										else if ( typeof l[lf] == 'object' && l[lf] instanceof Array ) {
-											for ( var ilf in l[lf] ) {
-												if ( typeof l[lf] == 'function' ) {
-													el.addEventListener( lf, l[lf][ilf] );
+							tab = Array( ++ind ).fill("\t").join('');
+							for ( var kk of keys ) {
+								//TODO: How do I handle values that don't map cleanly?
+								//TODO: Simplify this
+								if ( kk != 'listeners' && kk != 'class' && kk != 'children' && kk in kref ) { 
+									console.log(printf( "$1Setting '$2' of element $3 to '$4'", tab, kk, k, kref[kk]));
+									el[ kk ] = kref[ kk ];
+								}
+								//children
+								else if ( kk == "children" && kk in kref ) {
+									for ( var vv of kref["children"] ) {
+										el.appendChild( this.create( vv, scope ) );
+									}
+								}
+								else if ( kk == "listeners" && kk in kref ) {
+									var l = kref[ "listeners" ];
+									if ( typeof l == "object" && l instanceof Object ) {
+										for ( var lf in l ) {
+											console.log( printf( "$1Adding listener $2 to element: ", tab, lf ) );
+											if ( typeof l[lf] == 'function' ) {
+												el.addEventListener( lf, function (ev) {
+													//TODO: Try to make this new listener use one argument.
+													l[lf]( ev, bar( scope ) )  ;
+												} );
+											}
+											else if ( typeof l[lf] == 'object' && l[lf] instanceof Array ) {
+												for ( var ilf in l[lf] ) {
+													if ( typeof l[lf] == 'function' ) {
+														el.addEventListener( lf, l[lf][ilf] );
+													}
 												}
 											}
 										}
-									}
-								}	
-							}
-							//children
-							if ( "children" in element[k] ) {
-								for ( var vv in element[k]["children"] ) {
-									//children.push( this.create( element[k]["children"] ) );	
+									}	
 								}
 							}
 							//Unset each of these.
-							for ( var key in keys ) {
-								if ( keys[key] in element[k] ) {
-									log( printf( "Deleting key '$1'", keys[key] ) );
-									delete element[k][ keys[key] ];
-								}
+							for ( var key of keys ) {
+								( key in kref ) ? ((D) ? console.log( printf( "$1Deleting key '$2'", tab, key ) ) : 0) : 0;
+								( key in kref ) ? delete kref[key] : 0;
 							}
 							//TODO: If there are any elements left, run this on each of them. 
-							for ( var key in element[k] ) {
-								el.appendChild( this.create( { [ key ]: element[k][key] }, scope ) );
+							for ( var key in kref ) {
+								el.appendChild( this.create( { [ key ]: kref[key] }, scope ) );
 							}
 						}
 						node = el;
@@ -629,8 +513,8 @@ dew = (function () {
 
 			//Join and make a payload
 			var Vals = av.join( ("multipart" in st) ? "\r\n" : "&" ); 
-			//( cmsDebug ) ? console.log( Vals ) : 0;
-			//( cmsDebug ) ? console.log( st.sendTo ) : 0;
+			(D) ? console.log( Vals ) : 0;
+			(D) ? console.log( st.sendTo ) : 0;
 
 			//Make XHR to server and you're done
 			var x = new XMLHttpRequest();
