@@ -7,22 +7,19 @@ var calc = {
 	vars: { counter: 0 }
 , div: {
 		id: "calc"
+	//TODO: Is this possible?: input: "[type=numeric][placeholder=Type a number]": 
 	, input: {
 			type: "numeric"
 		, placeholder: "Type a number"
 		}
-	//,input: "[type=numeric][placeholder=Type a number]": 
 	, button: "Click Me"
 	, ul: {
 			//TODO: eww... this is an ugly way to initialize this, is there a better way?
 		  children: [7,8,9,4,5,6,3,2,1,"",0,""].map(function (x) {
 				return {
-				//"li.calcbutton span=x": { click: ... }
 					li: { 
 						span: x
-					, className:"calcbutton"
 					, listeners: {
-							//BUG: _ does not reference the root.... I wonder why?
 							click: function(ev,_) {
 								_.select("input").value += ev.target.firstElementChild.innerHTML;
 							}
@@ -37,27 +34,6 @@ var calc = {
 document.addEventListener( "DOMContentLoaded", function (ev) {
 	document.body.appendChild( dew.create( calc ) );
 });
-</script> 
-
-<script> 
-/*
-document.addEventListener( "DOMContentLoaded", function (ev) {
-	var calc = document.getElementById( "calc" );	
-	//Method 1 is crude and adds many listeners...
-	var inputs = document.querySelector("#calc input");	
-	var spans = [].slice.call( document.querySelectorAll("#calc li span") );	
-	var d = [].slice.call( document.querySelectorAll("#calc li") );	
-	for ( var dd in d ) {
-		d[dd].addEventListener( "click", function (ev) {
-			var p = ev.srcElement;
-console.log( p );
-			//inputs.value = inputs.value + p; 
-		});
-	}
-	//Method 2 adds one, and detects position...
-	//...not done yet...	
-});
-*/
 </script> 
 
 <style>
@@ -124,25 +100,5 @@ console.log( p );
 </style>
 
 <body>
-<!--
-<div id="calc">
-	<input type="number">
-	<button>X</button>		
-	<ul>
-		<li><span>0</span></li>
-		<li><span>0</span></li>
-		<li><span>0</span></li>
-		<li><span>0</span></li>
-		<li><span>0</span></li>
-		<li><span>0</span></li>
-		<li><span>0</span></li>
-		<li><span>0</span></li>
-		<li><span>0</span></li>
-		<li><span> </span></li>
-		<li><span>0</span></li>
-		<li><span> </span></li>
-	</ul>
-</div>
--->
 </body>
 </html>
