@@ -95,6 +95,9 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 							//TODO: the intention here is to let the user know that the audio is loaded.
 							//it would be nice to do from the component level.
 							load: function(x) { console.log( "audio loaded" ); }
+							//TODO: There ought to be an event for this, but I'm not sure:
+							//https://www.w3schools.com/jsref/prop_audio_played.asp
+							//https://www.w3schools.com/jsref/prop_audio_currenttime.asp
 						, progress: function(x) { ; }
 						}
 					}
