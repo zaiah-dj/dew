@@ -47,32 +47,6 @@ dew = (function () {
 		} 
 	}
 
-	//Traverse back and forth, with more terse, concise code. 
-  function traverse(e) {
-		//Take a string, break it into array
-		//Act like Unix, aka:
-		// '.' = current
-		// '..' = up one level
-		// '@' or '/' = root
-	
-		// @/div 
-		// ../div 
-		// ../../div 
-
-		// ../../? (first element in this chain)
-		
-		//Another way is:
-		// @<div 
-		// @<div<div
-
-		//$( ... ) is kind of like jQuery, but not
-		//$( ... ) works inside a closure
-		//$("div>p>h2")	
-
-		//Feels like this might be kind of slow, but meh
-	}
-
-
 	//Do some formatted tabbing...
 	var tabind = 1;
 	function tab( t ) {
@@ -121,6 +95,32 @@ dew = (function () {
 		, path: function ( arg ) {
 				//TODO: This will be tricky...	
 			}
+		/*
+			//Traverse back and forth, with more terse, concise code. 
+  	, traverse: function (e) {
+		//Take a string, break it into array
+		//Act like Unix, aka:
+		// '.' = current
+		// '..' = up one level
+		// '@' or '/' = root
+	
+		// @/div 
+		// ../div 
+		// ../../div 
+
+		// ../../? (first element in this chain)
+		
+		//Another way is:
+		// @<div 
+		// @<div<div
+
+		//$( ... ) is kind of like jQuery, but not
+		//$( ... ) works inside a closure
+		//$("div>p>h2")	
+
+		//Feels like this might be kind of slow, but meh
+			}
+		*/
 		}
 	}
 
@@ -399,7 +399,7 @@ dew = (function () {
 												(D) ? console.log( printf( "$1Adding single listener for event $2 to element: ", tab(), lf ) ) : 0;
 												el.addEventListener( lf, ( function ( listenerName ) {
 													return function (ev) {
-														(D) ? console.log( listenerName ) : 0;
+														(D) ? console.log( printf( "Calling: $1", listenerName ) ) : 0;
 														//TODO: Consider making this new listener use one argument.
 														l[listenerName]( ev, bar( scope ) )  ;
 													}
@@ -450,10 +450,18 @@ dew = (function () {
 		}
 
 		//Get something from HTTP request
-	, get: function ( addr, st ) {
+	, get: function ( addr, callback ) {
 			var x = new XMLHttpRequest();
-			x.onreadystatechange = ( st.callback ) ? st.callback : function () {;} 
-			x.open( "GET", addr/*st.sendTo*/, false );
+			//x.onreadystatechange = ( "callback" in st ) ? st.callback : function () {;} 
+			x.open( "GET", addr/*st.sendTo*/, true );
+			if ( callback != undefined ) 
+				x.onreadystatechange = function ( ev ) { callback( ev, x ); }
+			else {
+				x.onreadystatechange = (!D) ? function() {;} : function ( ev ) {
+					console.log( printf( "At readyState '$1': status = $2", x.readyState, x.status ) );
+					( x.readyState == 4 ) ? console.log( printf( "payload = $1", x.responseText ) ) : 0;
+				}
+			}
 			x.send();
 		}
 
@@ -536,14 +544,22 @@ dew = (function () {
 
 			//Make XHR to server and you're done
 			var x = new XMLHttpRequest();
-			x.onreadystatechange = ( st.callback ) ? st.callback : function () { ; }; 
-
 			//...
 			st.method = (!st.method) ? "POST" : st.method;
 			x.open( st.method, addr/*st.sendTo*/, false );
+			if ( "callback" in st && st.callback != undefined ) 
+				x.onreadystatechange = function ( ev ) { st.callback( ev, x ); }
+			else {
+				x.onreadystatechange = (!D) ? function() {;} : function ( ev ) {
+					console.log( printf( "At readyState '$1': status = $2", x.readyState, x.status ) );
+					( x.readyState == 4 ) ? console.log( printf( "payload = $1", x.responseText ) ) : 0;
+				}
+			}
 
-			if ( ! ("multipart" in st) )
+			if ( ! ("multipart" in st) && ! ("headers" in st) )
 				x.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+			else if ( "headers" in st )
+				for ( var h in st.headers ) x.setRequestHeader( h, st.headers[ h ] ); 
 			else {
 				x.setRequestHeader( 'Content-Type', "multipart/form-data; boundary=" + boundary );
 				Vals += "\r\n--" + boundary + "--"; 
