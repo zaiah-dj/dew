@@ -73,6 +73,16 @@ dew = (function () {
 	}
 
 
+	//Do some formatted tabbing...
+	var tabind = 1;
+	function tab( t ) {
+		if ( t == undefined ) ; 
+		else if ( t == -1 ) --tabind; 
+		else if ( t == 1 ) ++tabind;
+		return Array( tabind ).fill( "\t" ).join( '' );
+	}
+
+
 	//Return an object for use with event listeners
 	function bar ( a ) {
 		var scope = a;
@@ -250,9 +260,11 @@ dew = (function () {
 								//Bind function(s) to event
 								if ( typeof tt.f === 'function' && typeof tt.event === 'string' ) {
 									( local.verbose ) ? console.console.log( "Binding single function " + tt.f.name + " \n\n" ) : 0;
-									for ( d in dom ) { 
+									for ( d of dom ) { 
+/*
 										( local.verbose ) ? dom[ d ].addEventListener( tt.event, (function(fname) { f = fname; return function(ev){console.console.log("Calling " + f); }})(tt.f.name) ) : 0;
 										dom[ d ].addEventListener( tt.event, tt.f ); 
+*/
 									}
 								}
 								else if ( typeof tt.f === 'object' && typeof tt.event === 'string' ) {
@@ -339,14 +351,14 @@ dew = (function () {
 				//Object
 				else {
 					//the root element is the root element (node)
-					var ind = 1;
-					var tab = Array(ind).fill("\t").join('');
+					//var ind = 1;
+					//var tab = Array(ind).fill("\t").join('');
 					for ( var k in element ) {
-						(D) ? console.log( printf( "$1$2 is $3", tab, k, element[ k ] ) ) : 0;
+						(D) ? console.log( printf( "$1$2 is $3", tab(), k, element[ k ] ) ) : 0;
 						
 						//TODO: Handle this later...
 						if ( k == "vars" ) {
-							(D) ? console.log( printf("$1Found key 'vars'.  Going to next...",tab), "\n\t$$" ) : 0;
+							(D) ? console.log( printf("$1Found key 'vars'.  Going to next...", tab()), "\n\t$$" ) : 0;
 							continue;
 						}
 
@@ -366,7 +378,6 @@ dew = (function () {
 						}
 
 						else {
-							tab = Array( ++ind ).fill("\t").join('');
 							for ( var kk of keys ) {
 								//TODO: How do I handle values that don't map cleanly?
 								//TODO: Simplify this
@@ -376,25 +387,37 @@ dew = (function () {
 								}
 								//children
 								else if ( kk == "children" && kk in kref ) {
-									for ( var vv of kref["children"] ) {
+									for ( var vv of kref.children ) {
 										el.appendChild( this.create( vv, scope ) );
 									}
 								}
 								else if ( kk == "listeners" && kk in kref ) {
-									var l = kref[ "listeners" ];
+									var l = kref.listeners;
 									if ( typeof l == "object" && l instanceof Object ) {
 										for ( var lf in l ) {
-											console.log( printf( "$1Adding listener $2 to element: ", tab, lf ) );
 											if ( typeof l[lf] == 'function' ) {
-												el.addEventListener( lf, function (ev) {
-													//TODO: Try to make this new listener use one argument.
-													l[lf]( ev, bar( scope ) )  ;
-												} );
+												(D) ? console.log( printf( "$1Adding single listener for event $2 to element: ", tab(), lf ) ) : 0;
+												el.addEventListener( lf, ( function ( listenerName ) {
+													return function (ev) {
+														(D) ? console.log( listenerName ) : 0;
+														//TODO: Consider making this new listener use one argument.
+														l[listenerName]( ev, bar( scope ) )  ;
+													}
+												} )( lf ) );
 											}
 											else if ( typeof l[lf] == 'object' && l[lf] instanceof Array ) {
-												for ( var ilf in l[lf] ) {
-													if ( typeof l[lf] == 'function' ) {
-														el.addEventListener( lf, l[lf][ilf] );
+												(D) ? console.log( printf( "$1Adding multiple listeners for event $2 to element: ", tab(), lf ) ) : 0;
+												for ( var i in l[lf] ) {
+													if ( typeof l[lf][i] == 'function' ) {
+														(D) ? console.log( printf( "$1Assigning listener for event '$2'", tab(1), lf ) ) : 0;
+														el.addEventListener( lf, ( function ( listenerName, fbody ) {
+															return function (ev) {
+																(D) ? console.log( printf( "Calling: $1", listenerName ) ) : 0;
+																//TODO: Consider making this new listener use one argument.
+																fbody( ev, bar( scope ) )  ;
+															}
+														} )( lf, l[lf][i] ) );
+														(D) ? tab( -1 ) : 0;
 													}
 												}
 											}
@@ -409,7 +432,7 @@ dew = (function () {
 							}
 							//Unset each of these.
 							for ( var key of keys ) {
-								( key in kref ) ? ((D) ? console.log( printf( "$1Deleting key '$2'", tab, key ) ) : 0) : 0;
+								( key in kref ) ? ((D) ? console.log( printf( "$1Deleting key '$2'", tab(), key ) ) : 0) : 0;
 								( key in kref ) ? delete kref[key] : 0;
 							}
 							//TODO: If there are any elements left, run this on each of them. 
@@ -424,26 +447,13 @@ dew = (function () {
 			//node.self or node.root
 			//should always refer to the top level element 
 			return ( ref === undefined ) ? scope.root = node : node;
-			//return scope.root = node;
-//})();
 		}
-
-
-
 
 		//Get something from HTTP request
 	, get: function ( addr, st ) {
 			var x = new XMLHttpRequest();
 			x.onreadystatechange = ( st.callback ) ? st.callback : function () {;} 
 			x.open( "GET", addr/*st.sendTo*/, false );
-			/*
-			if ( ! ("multipart" in st) )
-				x.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-			else {
-				x.setRequestHeader( 'Content-Type', "multipart/form-data; boundary=" + boundary );
-				Vals += "\r\n--" + boundary + "--"; 
-			}
-			*/
 			x.send();
 		}
 
