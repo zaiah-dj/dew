@@ -45,6 +45,10 @@ header ul li {
 	margin-left: 10px;
 }
 
+header ul li a {
+	display: block;
+}
+
 header ul li a ,
 header ul li a:visited {
 	text-decoration: none;
@@ -54,6 +58,25 @@ header ul li a:visited {
 header ul li a:hover {
 	text-decoration: underline;
 }
+
+/*header ul li a:hover + ul { */
+/*header ul li a + ul {*/
+.asdf {
+	display: none;
+	height: 100px;
+	width: 200px;
+	border: 1px solid black;
+	padding: 0px;
+	background-color: white;
+	position: absolute;
+	top: 32px;
+}
+
+/*
+header ul li ul {
+	display: none;
+}
+*/
 
 .container {
 	background-color: white;

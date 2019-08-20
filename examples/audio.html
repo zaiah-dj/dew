@@ -1,9 +1,4 @@
-<!--
-audio.html
-==========
-
-All of these
- -->
+<!-- audio.html -> All of these -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,30 +14,33 @@ var songs = [
 </script> 
 
 <script> 
+//Silly simple audio player. Obviously not as efficient as the tag.
 document.addEventListener( "DOMContentLoaded", function (ev) {
-	//Silly simple audio player. Obviously not as efficient as the tag.
-	dew.debuggable(1);
-	document.body.appendChild( dew.create({
+	document.getElementById( "player-area-1" ).appendChild( dew.create({
+		//div.api
 		div: {
 			className: "api"
-		, audio: {
-				attrs: { 
-					controls: 1 
-				, "cheeky": true 
-				}
-			, source: {
-					src: "../static/2019-05-04--VoodooChile-160kbps.mp3"
-				}
-			}
+			//div.ap = Click me to play music."
 		, div: {
 				className: "ap"
 			, innerHTML: "Click me to play music."
 			}
+		, audio: {
+				attrs: { controls: 1 }
+			, source: { src: "../static/2019-04-30-Lone-LV-160kbps.mp3" }
+			}
 		}
 	}));
+	document.querySelector( "#player-area-1 audio" ).volume = 0.2;
 });
 </script> 
 <style>
+.container {
+	width: 80%; 
+	position: relative;
+	margin: 0 auto;
+	margin-top: 30px;
+}
 .api {
 	width: 100%;
 	height: 120px;
@@ -75,7 +73,7 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 		}
 	}
 
-	document.body.appendChild( dew.create({
+	document.getElementById( "player-area-2" ).appendChild( dew.create({
 		div: {
 			id: "thereal"
 		, children: [
@@ -210,5 +208,104 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 
 
 <body>
+	<div class="container">
+	<h2>Audio Players</h2>
+	<p>
+	The things
+	</p>
+
+	<div id="player-area-1">
+<pre>
+//Silly simple audio player. Obviously not as efficient as the tag.
+document.addEventListener( "DOMContentLoaded", function (ev) {
+  document.body.appendChild( dew.create({
+    div: {
+      className: "api"
+    , audio: {
+        attrs: { controls: 1 }
+      , source: { src: "../static/2019-04-30-Lone-LV-160kbps.mp3" } 
+      }
+    , div: {
+        className: "ap"
+      , innerHTML: "Click me to play music."
+      }
+    }
+  }));
+});
+</pre>
+
+  </div>
+  <div id="player-area-2">
+<pre>
+//Here is a completely custom audio player.
+document.addEventListener( "DOMContentLoaded", function (ev) {
+  //The first was a fair attempt; however, let's try something a little less banal... 
+  function soundControl(ev,_) {
+    if ( ev.target.innerHTML == "play_arrow" )
+      _.select("audio").play();  
+    else if ( ev.target.innerHTML == "pause" )
+      _.select("audio").pause();  
+    else if ( ev.target.innerHTML == "fast_rewind" )
+      console.log( "play me" );
+    else if ( ev.target.innerHTML == "fast_forward" ) {
+      console.log( "play me" );
+    }
+  }
+
+  document.body.appendChild( dew.create({
+    div: {
+      id: "thereal"
+    , children: [
+        { 
+          div: { 
+            className: "move" 
+          , div: {
+              className: "round"
+            }
+          } 
+        }
+      , { 
+          audio: { 
+            src: "../static/2019-04-30-Lone-LV-160kbps.mp3" 
+          , listeners: {
+              load: function(x) { console.log( "audio loaded" ); }
+            }
+          }
+        }
+      , { 
+          ul: { 
+            children: ["play_arrow","fast_rewind","fast_forward","pause"].map(function (x) {
+              return { 
+                li: { 
+                  className: x
+                , i: { className: "material-icons", innerHTML: x }
+                , listeners: { click: soundControl }
+                }
+              }
+            })
+          } 
+        }
+      , { 
+          div: {
+            input: { 
+              type: "range"
+            , attrs: { min: 0, step: 0.01, max: 1, value: 0.07 } 
+            , listeners: {
+                input: function (ev,_) { _.select("audio").volume = ev.target.value; }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }));
+
+  //Set audio here. (NOTE: This really should be done within the component.
+  document.querySelector( "#thereal audio" ).volume = 0.07;
+ });
+</pre>
+
+  </div>
+  </div>
 </body>
 </html>

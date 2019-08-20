@@ -259,14 +259,31 @@ document.addEventListener( "DOMContentLoaded", function (ev) {
 
 
 <body>
+<script>
+document.addEventListener("DOMContentLoaded", function (ev) {
+	var a = document.querySelector( "a.recipes" ); 
+	a.addEventListener( "click", (function ( ) {
+		var aa = 0;
+		return function (ev) {
+			ev.preventDefault();
+			console.log( "you are the thing." );
+			aa = !aa;
+			document.querySelector( "ul.asdf" ).style.display = (aa) ? "block" : "none" ;
+		}
+	})() );
+});
+</script>
 	<header>
 		<div>dew.js</div>
 		<ul>
 			<li><a href="/">Links</a></li>
 			<li>
-				<a href="#recipes">Recipes</a>
-				<ul>
-					<li><a href="a">a</a></li>
+				<a class="recipes" href="#recipes">Recipes</a>
+				<ul class="asdf">
+					<li><a href="examples/audio.html">Audio Player</a></li>
+					<li><a href="examples/calc.html">Little Calc 101</a></li>
+					<li><a href="examples/vform.html">Form Validation</a></li>
+					<li><a href="examples/requests.html">GETs and POSTs</a></li>
 				</ul>
 			</li>
 			<li><a href="#glossary">Glossary</a></li>
