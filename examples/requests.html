@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="../dew.js"></script>
+
+<style>
+html {
+	background-color: #ddd;
+}
+
+#container {
+	width: 80%;
+	margin: 0 auto;
+	background-color: #fff;
+	padding: 10px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-gecko-border-radius: 5px;
+	padding-bottom: 30px;
+	padding-top: 30px;
+}
+
+#app > div {
+	border-bottom: 2px solid black;
+	padding-bottom: 20px;
+}
+
+#app .content-area {
+	min-height: 200px;
+	height: auto;
+}
+
+.click-button-text {
+	font-size: 0.8em;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.click-button {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-gecko-border-radius: 5px;
+	border: 0px;
+	height: 30px;
+	min-width: 100px;
+}
+
+.click-button:hover {
+	background-color: black;
+	color: white;	
+}
+</style>
+
+<script>
+document.addEventListener( "DOMContentLoaded", function (ev) {
+	dew.debuggable();
+
+	//GET app
+	var getapp = {
+		//"div#get": 
+		div: {
+			id: "get"
+		, children: [
+				{ h2: "GET" }
+			, { 
+					div: { 
+						className: "click-button-text"
+					, innerHTML: dew.printf(
+							"Click the button below to retrieve content from <a href='$1'>$2</a>"
+						, "https://jsonplaceholder.typicode.com/"
+						, "JSON Placeholder" 
+						)
+					}
+				}
+				//"button.click-button = Retrieve!": { listeners: { click:  	
+				//"button.click-button = Retrieve!": { click:  //this is much cleaner...
+			, { 
+					button: { 
+						innerHTML: "Retrieve!"
+					, className: "click-button"
+					, listeners: {
+							click: function(ev,_) {	
+								dew.get( "https://jsonplaceholder.typicode.com/comments?postId=1", function (ev, r) {
+									if ( r.readyState == 4 ) {
+										try { 	
+											//TODO: This can be cleaner.
+											var rr = [], json = JSON.parse( r.responseText );
+											for ( var j of json ) rr.push( dew.create({ div: { h2: j.name, span: j.email, p: j.body	}	}) );
+											for ( var rrr of rr )_.select( ".get-content-area" ).appendChild( rrr ); 
+										}
+										catch {
+											_.select( ".get-content-area" ).innerHTML = "Failed to parse JSON returned from typicode."; 
+										}
+									}
+								} );
+							}	
+						}
+					}
+				}
+				//"div.content-area = No content yet..."  //this just looks better
+			, {
+					div: {
+						className: "get-content-area"
+					, innerHTML: "No content yet..."
+					}
+				}	
+			]
+		}
+	};	
+
+	//POST app
+	var postapp = {
+		div: {
+			id: "post"
+		//vars: { href: "https://jsonplaceholder.typicode.com/", string: "JSON Placeholder" }
+		, children: [
+				{ h2: "POST" }
+			//,{ div: dew.printf( "Click the button below to retrieve content from [$1=$2]", _.href, _.string ) }
+			//,{ "div = Click the button below to retrieve content from [$href=$string]" }
+			, { 
+					div: {
+						className: "click-button-text"
+					, innerHTML: dew.printf(
+							"Click the button below to post a message to <a href='$1'>$2</a>"
+						, "https://jsonplaceholder.typicode.com/"
+						, "JSON Placeholder" 
+						)
+					}
+				}
+			, {
+					//"button = Send!": { click: ... } 
+					button: { 
+						innerHTML: "Send!"
+					, className: "click-button"
+					, listeners: {
+							click: function(ev,_) {	
+								var postTo = "https://jsonplaceholder.typicode.com/posts";
+								var data = [ 
+									{ "name": "wabash", "value": "City in Connecticut", "type": "string" }
+								, { "name": "patsy", "value": "Sings in the Summer", "type": "string" } 
+								];
+								dew.post( postTo, {
+									rawText: data
+								, callback: function (ev, r) {
+										if ( r.readyState == 4 ) {
+											try {
+												//TODO: This can be cleaner.
+												var jj = dew.create({ table: { thead: { children: [ 
+													{ th: "ID" }, { th: "Title" }, { th: "Description" }
+												] } } });
+												//TODO: stub.append would be lovely...
+												for ( var j of [ json = JSON.parse( r.responseText ) ] ) { 
+													jj.appendChild( dew.create( {
+														tr: {
+															children: [ 
+																{ td: j.id } 
+															, { td: j.wabash } 
+															, { td: j.patsy } 
+															]
+														}
+													} ));
+													_.select( ".post-content-area" ).innerHTML = "";
+													_.select( ".post-content-area" ).appendChild( jj );
+												}
+											}
+											catch (err) {
+												_.select( ".post-content-area" ).innerHTML = err; 
+											}
+										}
+									}
+								});
+							}	
+						}
+					}
+				}
+				//"div.content-area = No content yet..."  //this just looks better
+			, {
+					div: {
+						className: "post-content-area"
+					, innerHTML: "No content yet..."
+					}
+				}	
+			]
+		}
+	};	
+
+	var r = {
+		div: {
+			id: "app"
+		, children: [ getapp, postapp ]
+		}
+	}
+
+	document.getElementById("container").appendChild( dew.create( r ) );
+}); 
+</script> 
+</head>
+
+<body>
+	<div id="container">
+		Dew can easily make GET and POST requests.  Here is a short demo.
+	</div>
+</body>
+</html>
